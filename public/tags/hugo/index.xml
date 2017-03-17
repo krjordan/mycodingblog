@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Hugo on My Coding Blog</title>
+    <link>/tags/hugo/index.xml</link>
+    <description>Recent content in Hugo on My Coding Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <atom:link href="/tags/hugo/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Moving to Hugo</title>
+      <link>/post/moving-to-hugo/</link>
+      <pubDate>Thu, 09 Feb 2017 21:27:17 -0600</pubDate>
+      
+      <guid>/post/moving-to-hugo/</guid>
+      <description>
+
+&lt;p&gt;I have decided to move my blog from &lt;a href=&#34;https://ghost.org/&#34;&gt;Ghost&lt;/a&gt; to &lt;a href=&#34;https://gohugo.io/&#34;&gt;Hugo&lt;/a&gt;. I have enjoyed using Ghost, but I wanted to play around with some static site generators and host it with &lt;a href=&#34;https://pages.github.com/&#34;&gt;GitHub Pages&lt;/a&gt;. I have been using a Ghost, &lt;a href=&#34;http://docker.io&#34;&gt;Docker&lt;/a&gt; and &lt;a href=&#34;http://digitalocean.com&#34;&gt;Digital Ocean&lt;/a&gt; setup and have enjoyed it, but it was time to break something.&lt;/p&gt;
+
+&lt;h2 id=&#34;hugo&#34;&gt;Hugo&lt;/h2&gt;
+
+&lt;p&gt;After doing some research and playing around with a few different static site generators (&lt;a href=&#34;http://cryogenweb.org/&#34;&gt;Cryogen&lt;/a&gt;, &lt;a href=&#34;https://github.com/gatsbyjs/gatsby&#34;&gt;GatsbyJS&lt;/a&gt;, &lt;a href=&#34;https://hexo.io&#34;&gt;Hexo&lt;/a&gt; and &lt;a href=&#34;https://phenomic.io&#34;&gt;Phenomic&lt;/a&gt;, to name a few), I decided Hugo worked best for my needs. It is easy to get set up and there are quite a few good looking &lt;a href=&#34;http://themes.gohugo.io/&#34;&gt;themes&lt;/a&gt;. I was up and running quickly and was able to copy and paste my blog content over from my Ghost blog. I haven&amp;rsquo;t been writing much, therefore I didn&amp;rsquo;t have much to copy over, but if you have a lot of content, they have a few &lt;a href=&#34;https://gohugo.io/tools/&#34;&gt;tools&lt;/a&gt; that can help ease the pain of transferring your content.&lt;/p&gt;
+
+&lt;p&gt;Once I had my blog looking fancy, I decided it was time to get it up and running with GitHub Pages. This is where I ran into some hiccups. Of course, an easy solution would be to checkout my &lt;code class=&#34;language-none&#34;&gt;gh-pages&lt;/code&gt; branch and run &lt;code class=&#34;language-none&#34;&gt;hugo --themes=MY_THEME&lt;/code&gt;, then delete everything except the &lt;code class=&#34;language-none&#34;&gt;/public&lt;/code&gt; directory. I don&amp;rsquo;t like this option and would prefer to just have it deploy when I do a &lt;code class=&#34;language-git&#34;&gt;git push&lt;/code&gt;. So I opened up my trusty browser and started searching for a better solution.&lt;/p&gt;
+
+&lt;h2 id=&#34;wercker&#34;&gt;Wercker&lt;/h2&gt;
+
+&lt;p&gt;I briefly tried using &lt;a href=&#34;https://travis-ci.org/&#34;&gt;Travis CI&lt;/a&gt;, but I couldn&amp;rsquo;t figure out how to get it to work properly. I have very limited experience with continuous integration tools and this was probably my downfall. However, &lt;a href=&#34;http://www.wercker.com/&#34;&gt;Wercker&lt;/a&gt; was fairly straightforward once I started figuring things out. I have two pipelines set up to build one after another once I push to the &lt;code class=&#34;language-none&#34;&gt;master&lt;/code&gt; branch. The first pipeline builds the hugo site and the second deploys it to my &lt;code class=&#34;language-none&#34;&gt;gh-pages&lt;/code&gt; branch. I have forked the theme I&amp;rsquo;m using and made a few small changes to it to suit my needs. So during my build process, I pull that from my forked repository.&lt;/p&gt;
+
+&lt;h3 id=&#34;setting-up-wercker&#34;&gt;Setting Up Wercker&lt;/h3&gt;
+
+&lt;p&gt;I created a new application in &lt;a href=&#34;http://www.wercker.com/&#34;&gt;Wercker&lt;/a&gt; and linked it to my repository that houses the code for my Hugo blog. The first pipeline I created was a build pipeline. I added a &lt;code class=&#34;language-none&#34;&gt;$GIT_TOKEN&lt;/code&gt; environment variable to both the build and deploy pipelines. You will need to generate a token in your &lt;a href=&#34;https://github.com/settings/tokens&#34;&gt;GitHub Developer Settings&lt;/a&gt; and add it as the value in Wercker. Make sure to check the &lt;code class=&#34;language-none&#34;&gt;repo&lt;/code&gt; checkbox. In the &lt;code class=&#34;language-none&#34;&gt;Workflows&lt;/code&gt; tab, I clicked the &lt;code class=&#34;language-none&#34;&gt;Add new pipeline&lt;/code&gt; and added a deploy pipeline. Then I chained them together by clicking the &lt;code class=&#34;language-none&#34;&gt;+&lt;/code&gt; next to the build pipeline and added my deploy pipeline.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m using the &lt;code class=&#34;language-none&#34;&gt;arjen/hugo-build&lt;/code&gt; and &lt;code class=&#34;language-none&#34;&gt;leipert/git-push&lt;/code&gt; scripts to help out with building and deploying my blog. My &lt;code class=&#34;language-none&#34;&gt;wercker.yml&lt;/code&gt; file is as follows:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;box: debian
+build:
+	steps:
+		- script:
+			name: install git
+			code: |
+				apt-get update
+				apt-get -y install git
+		- script:
+			name: download theme
+			code: |
+				git clone https://github.com/krjordan/hugo-redlounge.git themes/hugo-redlounge
+				rm -rf themes/hugo-redlounge/.git
+		- arjen/hugo-build@1.14.1:
+			version: &amp;quot;0.18.1&amp;quot; 			# Hugo version
+			theme: hugo-redlounge
+			disable_pygments: true		# Disable pygments because I&#39;m using Prism.js
+
+deploy:
+	steps:
+		- script:
+			name: install git
+			code: |
+				apt-get update &amp;amp;&amp;amp; apt-get install git -y
+		- leipert/git-push:
+			gh_oauth: $GIT_TOKEN
+			basedir: public
+			clean_removed_files: true
+			branch: gh-pages
+			repo: krjordan/personal-blog
+			gh_pages_domain: mycodingblog.com    # Optional Custom Domain
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;triggering-the-build&#34;&gt;Triggering the Build&lt;/h2&gt;
+
+&lt;p&gt;Once this is set up, it should automatically build and push the &lt;code class=&#34;language-none&#34;&gt;/public&lt;/code&gt; directory contents to the &lt;code class=&#34;language-none&#34;&gt;gh-pages&lt;/code&gt; branch. It should also set up a CNAME file with the domain name specified with the &lt;code class=&#34;language-none&#34;&gt;gh_pages_domain&lt;/code&gt; variable.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;I&amp;rsquo;m happy with the overall setup. Setting up Hugo was fairly quick and easy. Deploying it, not so much, but I was finally able to get everything up and running like I wanted. So, I broke some things, fixed some things and got a new theme for my blog.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

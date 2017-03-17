@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <url>
+    <loc>/post/moving-to-hugo/</loc>
+    <lastmod>2017-02-09T21:27:17-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/about/</loc>
+    <lastmod>2017-02-08T19:10:23-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/getting-started-in-web-development/</loc>
+    <lastmod>2016-08-04T15:04:04-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/email-newsletter-adventure/</loc>
+    <lastmod>2016-06-01T15:05:19-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/ghost-docker/</loc>
+    <lastmod>2015-12-31T15:03:02-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/node-email-templates/</loc>
+    <lastmod>2015-12-29T13:01:54-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/random-quote-part-II/</loc>
+    <lastmod>2015-11-30T12:56:39-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/random-quote-part-I/</loc>
+    <lastmod>2015-10-20T13:00:19-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/navigation-header-with-flexbox/</loc>
+    <lastmod>2015-10-02T13:02:45-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/discovering-flexbox/</loc>
+    <lastmod>2015-09-15T15:06:14-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/my-first-post-with-ghost/</loc>
+    <lastmod>2015-09-05T15:01:52-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/up-and-running-with-ghost-and-digital-ocean/</loc>
+    <lastmod>2015-09-05T12:06:37-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/digital-ocean/</loc>
+    <lastmod>2015-09-05T12:06:37-06:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/docker/</loc>
+    <lastmod>2015-12-31T15:03:02-06:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/email/</loc>
+    <lastmod>2016-06-01T15:05:19-06:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/flexbox/</loc>
+    <lastmod>2015-10-02T13:02:45-06:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/ghost/</loc>
+    <lastmod>2015-12-31T15:03:02-06:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/hugo/</loc>
+    <lastmod>2017-02-09T21:27:17-06:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/</loc>
+    <lastmod>2017-02-09T21:27:17-06:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/node/</loc>
+    <lastmod>2015-12-29T13:01:54-06:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/post/</loc>
+    <lastmod>2017-02-09T21:27:17-06:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/wercker/</loc>
+    <lastmod>2017-02-09T21:27:17-06:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+</urlset>

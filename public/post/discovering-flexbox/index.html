@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <title>
+    Discovering Flexbox // My Coding Blog
+  </title>
+
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="Ryan Jordan">
+<meta name="generator" content="Hugo 0.19" />
+
+  <meta property="og:title" content="Discovering Flexbox" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:url" content="/post/discovering-flexbox/" />
+
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/base-min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/pure-min.css">
+  
+  
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/grids-responsive-min.css">
+  
+  
+
+  <link rel="stylesheet" href="//css/redlounge.css">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href='//fonts.googleapis.com/css?family=Raleway:400,200,100,700,300,500,600,800' rel='stylesheet' type='text/css'>
+  <link href='//fonts.googleapis.com/css?family=Libre+Baskerville:400,700,400italic' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="My Coding Blog" />
+
+    
+  
+
+  
+  <link rel="stylesheet" href="/css/prism.css">
+  <script src="/js/prism.js"></script>
+
+  
+
+  
+
+  
+
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', "UA-67235996-1", 'auto');
+  ga('send', 'pageview');
+</script>
+
+</head>
+
+<body>
+	
+
+	<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4">
+  <div class="header">
+    
+
+	
+
+    <h1 class="brand-title">My Coding Blog</h1>
+    <h2 class="brand-tagline">This is where I post about what I&#39;ve learned in my career as a web developer. I also post tutorials and other random, but hopefully useful things, which can benefit beginners and experts alike.</h2>
+
+    <nav class="nav">
+      <ul class="nav-list">
+        <li class="nav-item"><span class="nav-item-separator">//</span><a href="/">Home</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/about">About Me</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="http://krjordan.co">Portfolio</a></li>
+        
+      </ul>
+    </nav>
+
+    
+    <div class="social-buttons">
+      
+        
+        <a href="http://codepen.io/krjordan/pens/public/" target="_blank"><i class='fa fa-codepen fa-2x'></i></a>
+        
+      
+        
+        <a href="https://github.com/krjordan" target="_blank"><i class='fa fa-github fa-2x'></i></a>
+        
+      
+        
+        <a href="https://twitter.com/RyanJ1500" target="_blank"><i class='fa fa-twitter fa-2x'></i></a>
+        
+      
+      
+    </div>
+    
+
+  </div>
+</div>
+
+	
+	
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+		<a name="top"></a>
+		
+
+		
+			
+	    
+  		<section class="post">
+            <h1 class="post-title">
+              <a href="/post/discovering-flexbox/">Discovering Flexbox</a>
+            </h1>
+            <h3 class="post-subtitle">
+            	
+            </h3>
+            
+            	<span class="post-date">
+                	<span class="post-date-day"><sup>15</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Sep</span> <span class="post-date-year">2015</span>
+            	</span>
+            	
+            
+            	
+            		<span class="post-author-single">By <a class="post-author"  target="">Ryan Jordan</a></span>
+            		
+
+
+
+
+            	
+            
+
+			
+			
+
+			
+
+			
+
+            <p>So, now that I work with a team of web developers, I am constantly learning new things. One of the many new things I&rsquo;ve learned about, is flexbox. I have to admit, I found it very intimidating at first. I figured I&rsquo;d make a small tutorial about flexbox using a very simple navigation menu.</p>
+
+<p>Flexbox makes things easier, especially when it comes to centering items. One of the main reasons I use <a href="http://getbootstrap.com">Bootstrap</a> in the majority of my projects is due to it being a pain to layout items and get them centered. Using frameworks like <a href="http://getbootstrap.com">Bootstrap</a> and <a href="http://foundation.zurb.com">Foundation</a> help you get up and running quickly. However, most developers (I&rsquo;ve been guilty of this) don&rsquo;t go back and remove the unused CSS or use a CDN where most users will have the file cached, but for those who don&rsquo;t, well it could take a bit more time to load.</p>
+
+<p></p>
+
+<p>With a few lines of CSS, we can get a very simple navigation menu centered and listed horizontally. For this example, I&rsquo;ll just use an unordered list.</p>
+
+<pre><code class="language-html">&lt;body&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&quot;#&quot;&gt;Home&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&quot;#&quot;&gt;About&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&quot;#&quot;&gt;Blog&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&quot;#&quot;&gt;Contact&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/body&gt;
+</code></pre>
+
+<p><img src="/img/Discovering_Flexbox_1.png" alt="HTML output" /></p>
+
+<p>We&rsquo;ll add a bit of styling to make our page look a bit more presentable.</p>
+
+<pre><code class="language-css">li {
+  list-style: none;
+  padding: 15px;
+}
+
+li:hover {
+  color: red;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+</code></pre>
+
+<p><img src="/img/Screen-Shot-2015-09-15-at-6-08-30-PM.png" alt="HTML output" /></p>
+
+<p>Alright, now it&rsquo;s starting to look like a navigation menu. Now we just need to add <code class="language-css">display: flex;</code> to the container of the items we want to center. In this case, it&rsquo;s the <code class="language-html">&lt;ul&gt;</code> .</p>
+
+<p><img src="/img/Discovering_Flexbox_and_main_css_-_svg.png" alt="HTML output" /></p>
+
+<p>The default value for <code class="language-css">flex-direction: row;</code> ,which just so happens to be what we need. Now we need to add <code class="language-css">justify-content: center;</code> and we&rsquo;re done.</p>
+
+<p><img src="/img/Discovering_Flexbox_and_main_css_-_svg-1.png" alt="HTML output" /></p>
+
+<p>The complete CSS file looks like:</p>
+
+<pre><code class="language-css">ul {
+  display: flex;
+  justify-content: center;
+}
+
+li {
+  list-style: none;
+  padding: 15px;
+}
+
+li:hover {
+  color: red;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+</code></pre>
+
+<p>Check out the <a href="http://codepen.io/krjordan/pen/pjgqZZ/?editors=110">codepen</a></p>
+
+<p>Flexbox offers a lot more than just giving us the ability to quickly center elements. I plan on writing a few more posts on the topic, but you should check out two great resources I&rsquo;ve found. CSS-Tricks has a great post on it called <a href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/">A Complete Guide to Flexbox</a> that I refer to quite frequently and Wes Bos has some awesome free <a href="http://flexbox.io/">video tutorials</a> to help get you started.</p>
+	
+			
+
+			
+				<div class="tags-list">
+					<span class="dark-red">Tags</span><span class="decorative-marker">//</span>
+					
+	                <a class="post-tag post-tag-flexbox" href="//tags/flexbox">flexbox</a>,
+	                
+				</div>
+			
+
+			
+				<div class="paging">
+					<span class="paging-label">More Reading</span>
+					
+					<div class="paging-newer">
+						<span class="dark-red">Newer</span><span class="decorative-marker">//</span>
+						<a class="paging-link" href="/post/navigation-header-with-flexbox/">Navigation Header with Flexbox</a>
+		            </div>
+		            
+
+					
+					<div class="paging-older">
+						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
+			            <a class="paging-link" href="/post/my-first-post-with-ghost/">My First Post with Ghost</a>
+		            </div>
+		            
+	            </div>
+            
+          </section>
+          
+          	<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ryanscodingblog';
+    var disqus_identifier = '\/post\/discovering-flexbox\/';
+    var disqus_title = 'Discovering Flexbox';
+    var disqus_url = '\/post\/discovering-flexbox\/';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+          
+        
+      <div class="footer">
+	<hr class="thin" />
+	<div class="pure-menu pure-menu-horizontal pure-menu-open">
+		<ul class="footer-menu">
+		
+		</ul>
+	</div>
+
+	<p>&copy; 2017. All rights reserved.</p>
+</div>
+    </div>
+  </div>
+	
+
+	
+
+  
+</body>
+</html>

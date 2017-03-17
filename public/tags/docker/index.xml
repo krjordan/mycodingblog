@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Docker on My Coding Blog</title>
+    <link>/tags/docker/index.xml</link>
+    <description>Recent content in Docker on My Coding Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <atom:link href="/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Ghost &amp; Docker</title>
+      <link>/post/ghost-docker/</link>
+      <pubDate>Thu, 31 Dec 2015 15:03:02 -0600</pubDate>
+      
+      <guid>/post/ghost-docker/</guid>
+      <description>&lt;p&gt;Since I have had this blog up and running, I&amp;rsquo;ve been using ghost with a &lt;a href=&#34;https://www.digitalocean.com/&#34;&gt;Digital Ocean&lt;/a&gt; virtual machine. If you&amp;rsquo;re looking to go that route, I have written a quick tutorial on that &lt;a href=&#34;http://mycodingblog.com/up-and-running-with-ghost-and-digital-ocean/&#34;&gt;here&lt;/a&gt;. I have not had any issues, but since I have been using &lt;a href=&#34;https://www.docker.com/&#34;&gt;Docker&lt;/a&gt; more and more, I decided it was finally time to throw my blog into a container. I have to admit, it took a few days and a bit of research. Maybe I&amp;rsquo;m still new at this whole coding thing, I know I have a ton to learn, but seriously?&lt;/p&gt;
+
+&lt;p&gt;I ran into a few hiccups, but I did finally find a solution. I am using the &lt;a href=&#34;https://hub.docker.com/_/ghost/&#34;&gt;Official Docker Ghost Image&lt;/a&gt;. It briefly describes how to get it up and running. Well, almost&amp;hellip; The commands given will end up giving you an error:&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-none&#34;&gt;ERROR: Unable to access Ghost&#39;s content path:
+	EACCES: permission denied, open &#39;/usr/src/ghost/content/apps/ebc538ae3ae45772&#39;
+
+Check that the content path exists and file system permissions are correct.
+Help and documentation can be found at http://support.ghost.org.
+
+npm info ghost@0.7.2 Failed to exec start script
+npm ERR! Linux 3.10.94-1.el6.elrepo.x86_64
+npm ERR! argv &amp;quot;/usr/local/bin/node&amp;quot; &amp;quot;/usr/local/bin/npm&amp;quot; &amp;quot;start&amp;quot;
+npm ERR! node v4.2.3
+npm ERR! npm  v2.14.7
+npm ERR! code ELIFECYCLE
+npm ERR! ghost@0.7.2 start: `node index`
+npm ERR! Exit status 235
+npm ERR!
+npm ERR! Failed at the ghost@0.7.2 start script &#39;node index&#39;.
+npm ERR! This is most likely a problem with the ghost package,
+npm ERR! not with npm itself.
+npm ERR! Tell the author that this fails on your system:
+npm ERR!     node index
+npm ERR! You can get their info via:
+npm ERR!     npm owner ls ghost
+npm ERR! There is likely additional logging output above.
+npm ERR! Linux 3.10.94-1.el6.elrepo.x86_64
+npm ERR! argv &amp;quot;/usr/local/bin/node&amp;quot; &amp;quot;/usr/local/bin/npm&amp;quot; &amp;quot;start&amp;quot;
+npm ERR! node v4.2.3
+npm ERR! npm  v2.14.7
+npm ERR! path npm-debug.log.7da2e9feb6af80ea1c45d89105a542fd
+npm ERR! code EACCES
+npm ERR! errno -13
+npm ERR! syscall open
+
+npm ERR! Error: EACCES: permission denied, open &#39;npm-debug.log.7da2e9feb6af80ea1c45d89105a542fd&#39;
+npm ERR!     at Error (native)
+npm ERR!  { [Error: EACCES: permission denied, open &#39;npm-debug.log.7da2e9feb6af80ea1c45d89105a542fd&#39;]
+npm ERR!   errno: -13,
+npm ERR!   code: &#39;EACCES&#39;,
+npm ERR!   syscall: &#39;open&#39;,
+npm ERR!   path: &#39;npm-debug.log.7da2e9feb6af80ea1c45d89105a542fd&#39; }
+npm ERR!
+npm ERR! Please try running this command again as root/Administrator.
+
+npm ERR! Please include the following file with any support request:
+npm ERR!     /usr/src/ghost/npm-debug.log
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Reading the comments didn&amp;rsquo;t help me much, but did get me pointed in the right direction. It appears that ghost has permission issues when running in production. However, &lt;a href=&#34;https://github.com/snnd&#34;&gt;@snnd&lt;/a&gt; posted this little &lt;a href=&#34;https://github.com/snnd/docker-ghost-bundle&#34;&gt;gem&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;So I did what he said and it didn&amp;rsquo;t work. I had to make some more changes to the &lt;code class=&#34;language-none&#34;&gt;start.sh&lt;/code&gt; file. In all fairness, it is most likely my fault, but I was able to get it to work.&lt;/p&gt;
+
+&lt;h2 id=&#34;let-s-make-a-ghost-container&#34;&gt;Let&amp;rsquo;s Make a Ghost Container!&lt;/h2&gt;
+
+&lt;p&gt;Be sure to copy your &lt;code class=&#34;language-none&#34;&gt;content&lt;/code&gt; folder if you already have a ghost blog up and running. If you don&amp;rsquo;t, you can add these &lt;a href=&#34;https://github.com/TryGhost/Ghost/tree/master/content&#34;&gt;folders&lt;/a&gt; or use the ones from the &lt;a href=&#34;https://github.com/snnd/docker-ghost-bundle&#34;&gt;repo&lt;/a&gt; mentioned earlier and place them where ever you want your ghost files to live on your host. You will also need a config file. I did a &lt;code class=&#34;language-git&#34;&gt;git clone &lt;a href=&#34;https://github.com/snnd/docker-ghost-bundle.git&#34;&gt;https://github.com/snnd/docker-ghost-bundle.git&lt;/a&gt;&lt;/code&gt; and changed the directory name to &lt;code class=&#34;language-none&#34;&gt;mycodingblog/&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;I also added all of my data, images and theme files to the appropriate directories. Next, I edited the &lt;code class=&#34;language-none&#34;&gt;mycodingblog/config/config.js&lt;/code&gt; file:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;var path = require(&#39;path&#39;),
+		config;
+
+config = {
+	production: {
+		url: &#39;http://mycodingblog.com/&#39;,
+		mail: {},
+		database: {
+			client: &#39;sqlite3&#39;,
+			connection: {
+				filename: path.join(&#39;/usr/src/ghost/content/data/ghost.db&#39;)
+			},
+			debug: true
+		},
+
+		server: {
+			host: &#39;0.0.0.0&#39;,
+			port: &#39;2368&#39;
+		}
+	}
+};
+
+module.exports = config;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then I edited the &lt;code class=&#34;language-none&#34;&gt;start.sh&lt;/code&gt; file:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;#!/bin/bash
+
+docker run -d --name mycodingblog \
+	-p 8080:2368 \
+	-e VIRTUAL_HOST=mycodingblog.com \
+	-e NODE_ENV=production \
+	-v /mycodingblog/content/themes:/usr/src/ghost/content/themes \
+	-v /mycodingblog/content/apps:/usr/src/ghost/content/apps \
+	-v /mycodingblog/content/images:/usr/src/ghost/content/images \
+	-v /mycodingblog/content/data:/usr/src/ghost/content/data \
+	-v /mycodingblog/config:/var/lib/ghost \
+	ghost
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then I typed &lt;code class=&#34;language-none&#34;&gt;./start.sh&lt;/code&gt;. Of course this was after playing around with it for a few hours. Make sure to use the &lt;code class=&#34;language-none&#34;&gt;-d&lt;/code&gt; flag to run in detached mode. It started up and told me to point my browser to &lt;code class=&#34;language-none&#34;&gt;&lt;a href=&#34;http://mycodingblog.com&#34;&gt;http://mycodingblog.com&lt;/a&gt;&lt;/code&gt;. So now you should have a ghost container up and running.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>My First Post with Ghost</title>
+      <link>/post/my-first-post-with-ghost/</link>
+      <pubDate>Sat, 05 Sep 2015 15:01:52 -0600</pubDate>
+      
+      <guid>/post/my-first-post-with-ghost/</guid>
+      <description>&lt;p&gt;So I&amp;rsquo;ve decided to start a blog and write about my journey of starting a new career. I just landed a job as a Junior Web Developer and I really wish I would have done this sooner! My goal for this blog is to gain a better understanding of the topics that I post about and hopefully help other new developers find their way through the maze of learning to code.&lt;/p&gt;
+
+&lt;p&gt;I have chosen to use &lt;a href=&#34;https://ghost.org/&#34;&gt;ghost&lt;/a&gt; as my means to accomplish this. I wanted to play around with it before I decided to put it up on a server, so I started off with &lt;a href=&#34;https://github.com/dbough/vagrant-ghost&#34;&gt;this repo&lt;/a&gt; on Github and typed &lt;code&gt;vagrant up&lt;/code&gt; in my terminal. Assuming you have &lt;a href=&#34;https://vagrantup.com&#34;&gt;vangrant&lt;/a&gt;, if not, check them out. It was actually quite simple once I figured out the best way to go about installing it. I&amp;rsquo;m also looking forward to tweaking the default theme and maybe writing out a small tutorial on how I accomplished this.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;p&gt;My goal is to make a new post at least once a week and hopefully have a way for interested users to subscribe to it. That is, if you find what I have to say useful. &lt;del&gt;I will also be looking for a way to add a comment section to each post&lt;/del&gt;, as I would like the feedback and collaboration that hopefully comes along with this endeavor.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

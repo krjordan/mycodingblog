@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <title>
+    Navigation Header with Flexbox // My Coding Blog
+  </title>
+
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="Ryan Jordan">
+<meta name="generator" content="Hugo 0.19" />
+
+  <meta property="og:title" content="Navigation Header with Flexbox" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:url" content="/post/navigation-header-with-flexbox/" />
+
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/base-min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/pure-min.css">
+  
+  
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/grids-responsive-min.css">
+  
+  
+
+  <link rel="stylesheet" href="//css/redlounge.css">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href='//fonts.googleapis.com/css?family=Raleway:400,200,100,700,300,500,600,800' rel='stylesheet' type='text/css'>
+  <link href='//fonts.googleapis.com/css?family=Libre+Baskerville:400,700,400italic' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="My Coding Blog" />
+
+    
+  
+
+  
+  <link rel="stylesheet" href="/css/prism.css">
+  <script src="/js/prism.js"></script>
+
+  
+
+  
+
+  
+
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', "UA-67235996-1", 'auto');
+  ga('send', 'pageview');
+</script>
+
+</head>
+
+<body>
+	
+
+	<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4">
+  <div class="header">
+    
+
+	
+
+    <h1 class="brand-title">My Coding Blog</h1>
+    <h2 class="brand-tagline">This is where I post about what I&#39;ve learned in my career as a web developer. I also post tutorials and other random, but hopefully useful things, which can benefit beginners and experts alike.</h2>
+
+    <nav class="nav">
+      <ul class="nav-list">
+        <li class="nav-item"><span class="nav-item-separator">//</span><a href="/">Home</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/about">About Me</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="http://krjordan.co">Portfolio</a></li>
+        
+      </ul>
+    </nav>
+
+    
+    <div class="social-buttons">
+      
+        
+        <a href="http://codepen.io/krjordan/pens/public/" target="_blank"><i class='fa fa-codepen fa-2x'></i></a>
+        
+      
+        
+        <a href="https://github.com/krjordan" target="_blank"><i class='fa fa-github fa-2x'></i></a>
+        
+      
+        
+        <a href="https://twitter.com/RyanJ1500" target="_blank"><i class='fa fa-twitter fa-2x'></i></a>
+        
+      
+      
+    </div>
+    
+
+  </div>
+</div>
+
+	
+	
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+		<a name="top"></a>
+		
+
+		
+			
+		    <div id="toc" class="pure-u-1 pure-u-md-1-4">
+				<small class="toc-label">Contents</small>
+		   	 	<nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#adding-flexbox">Adding Flexbox</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+		    </div>
+		    
+	    
+  		<section class="post">
+            <h1 class="post-title">
+              <a href="/post/navigation-header-with-flexbox/">Navigation Header with Flexbox</a>
+            </h1>
+            <h3 class="post-subtitle">
+            	
+            </h3>
+            
+            	<span class="post-date">
+                	<span class="post-date-day"><sup>2</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Oct</span> <span class="post-date-year">2015</span>
+            	</span>
+            	
+            
+            	
+            		<span class="post-author-single">By <a class="post-author"  target="">Ryan Jordan</a></span>
+            		
+
+
+
+
+            	
+            
+
+			
+			
+
+			
+
+			
+
+            <p>I decided to continue with the small flexbox tutorials. So here is another one. In this tutorial, we will make a navigation header using flexbox. If you haven&rsquo;t read my first post on flexbox, you should check it out <a href="http://mycodingblog.com/discovering-flexbox/">here</a>. I have made a <a href="http://codepen.io/krjordan/pen/PPppOd/">codepen</a> of what we will be building. Let&rsquo;s get started with the HTML.</p>
+
+<p></p>
+
+<pre><code class="language-html">&lt;body&gt;
+  &lt;div id=&quot;header&quot;&gt;
+    &lt;a href=&quot;#&quot;&gt;
+      &lt;i class=&quot;fa fa-tree&quot;&gt;&lt;/i&gt;
+    &lt;/a&gt;
+    &lt;nav role='navigation'&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href=&quot;#&quot;&gt;Home&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&quot;#&quot;&gt;About&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&quot;#&quot;&gt;Clients&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href=&quot;#&quot;&gt;Contact Us&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+    &lt;a href=&quot;#&quot;&gt;Learn More
+      &lt;i class=&quot;fa fa-bars&quot;&gt;&lt;/i&gt;
+    &lt;/a&gt;
+  &lt;/div&gt;
+&lt;/body&gt;
+</code></pre>
+
+<p>Nothing new here, it is a very simple navbar using some icons from <a href="https://fortawesome.github.io/Font-Awesome/get-started/">Font Awesome</a>. I&rsquo;ll style it up a bit so we can get to the point. I&rsquo;m using <a href="http://sass-lang.com/">SASS</a>, so if you are still using regular CSS you should switch! If you are just starting out, check out the <a href="http://codepen.io/krjordan/pen/PPppOd/">codepen</a> and click the <code class="language-none">view compiled</code> button to view the regular CSS. This will also show you all of the prefixers too (<code class="language-css">-webkit-</code>, <code class="language-css">-moz</code>, etc.).</p>
+
+<pre><code class="language-css">#header {
+  height: 2.5em;
+  color: #333;
+  a {
+    text-decoration: none;
+    color: #333;
+    &amp;:hover{
+      color: lighten(#333, 30%);
+    }
+  }
+  i {
+    padding: 0 0.625em;
+    font-size: 1.250em;
+    &amp;:hover {
+      color: lighten(#333, 30%);
+    }
+  }
+  nav {
+    ul {
+      li {
+        list-style-type: none;
+        padding: 0.625em 1.250em;
+        border-right: 1px solid #e5e5e5;
+        &amp;:last-of-type {
+          border: none;
+        }
+      }
+    }
+  }
+}
+</code></pre>
+
+<p>So this will give us:
+<img src="/img/Flexbox_Navigation_Snippet-4.png" alt="Screenshot Without Flexbox" /></p>
+
+<h3 id="adding-flexbox">Adding Flexbox</h3>
+
+<p>So lets add some flexbox. We&rsquo;ll start off by adding <code class="language-css">display: flex;</code>, <code class="language-css">align-items: center;</code> and <code class="language-css">justify-content: center;</code> to the <code class="language-css">div#header</code>, like so:</p>
+
+<pre><code class="language-css">#header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  ...
+}
+</code></pre>
+
+<p><img src="/img/Flexbox_Navigation_Snippet-1.png" alt="Screenshot Adding Flexbox" /></p>
+
+<p>This centers the content inside the header. <strong>Note:</strong> the <code class="language-html">&lt;ul&gt;</code> is pushing the tree icon to the left. No need to concern ourselves with that. Now lets style the <code class="language-html">&lt;ul&gt;</code> to <code class="language-css">display: flex;</code>, <code class="language-css">align-items: center;</code> and <code class="language-css">justify-content</code>. For the sake of this tutorial, and because I hate incomplete tutorials that skip over certain sections and assume the reader knows what they don&rsquo;t know&hellip;</p>
+
+<pre><code class="language-css">...
+nav {
+  ul {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    li {
+      ...
+    }
+  }
+}
+</code></pre>
+
+<p><img src="/img/Flexbox_Navigation_Snippet-2.png" alt="Screenshot of more flexbox additions" /></p>
+
+<p>Alright, so we are almost there! We now have our navbar and unordered list centered. Now we just need to figure out a way to push the tree icon to the left and the &ldquo;Learn More&rdquo; and menu icon to the right. We could do something crazy like mess with the width of the <code class="language-html">&lt;nav&gt;</code> or use padding or margin. I dare say we could even use <code class="language-css">position: absolute;</code>, but <strong>NO!!</strong> There is a better solution. Let&rsquo;s look at <code class="language-css">flex-grow: 1;</code>.</p>
+
+<p><code class="language-css">flex-grow</code> is defined by <a href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/">CSS-Tricks</a> as</p>
+
+<blockquote>
+<p>The ability for a flex item to grow if necessary. It accepts a unitless value that serves as a proportion. It dictates what amount of the available space inside the flex container item should take up.</p>
+</blockquote>
+
+<p>I personally use the <code class="language-css">flex</code> shorthand property since it only requires one parameter, <code class="language-css">flex-grow</code>. It will accomplish the same goal. So we will add <code class="language-css">flex: 1;</code> to our <code class="language-html">&lt;nav&gt;</code> element. Like so:</p>
+
+<pre><code class="language-css">...
+
+nav {
+  flex: 1;
+  ul {
+    display: flex;
+    align-items: center;
+    ...
+</code></pre>
+
+<p>Our header will now be complete.
+<img src="/img/Flexbox_Navigation_Snippet-5.png" alt="Screenshot of Finished navbar" /></p>
+
+<p>So without using excessive padding, margin, absolute positioning or a framework we have built a simple navigation header. It isn&rsquo;t mobile friendly, but works well on medium and up views. We would need to do a bit more to make it responsive.</p>
+
+<p>That&rsquo;s all for now. The complete SASS file is written below or, once again, you can check out the <a href="http://codepen.io/krjordan/pen/PPppOd">codepen</a> for the demo and code. <del>When time permits, hopefully soon, I will add a comment functionality to the blog</del>. If you have any questions or anything to add, be sure to leave a comment below. You can also reach me on Twitter at <a href="https://twitter.com/RyanJ1500">@RyanJ1500</a>.</p>
+
+<pre><code class="language-css">#header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.5em;
+  color: #333;
+  a {
+    text-decoration: none;
+    color: #333;
+    &amp;:hover {
+      color: lighten(#333, 30%);
+    }
+  }
+  i {
+    padding: 0 0.625em;
+    font-size: 1.250em;
+    &amp;:hover {
+      color: lighten(#333, 30%);
+    }
+  }
+  nav {
+    flex: 1;
+    ul {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      li {
+        list-style-type: none;
+        padding: 0.625em 1.250em;
+        border-right: 1px solid #e5e5e5;
+        &amp;:last-of-type {
+          border: none;
+        }
+      }
+    }
+  }
+}
+</code></pre>
+	
+			
+
+			
+				<div class="tags-list">
+					<span class="dark-red">Tags</span><span class="decorative-marker">//</span>
+					
+	                <a class="post-tag post-tag-flexbox" href="//tags/flexbox">flexbox</a>,
+	                
+				</div>
+			
+
+			
+				<div class="paging">
+					<span class="paging-label">More Reading</span>
+					
+					<div class="paging-newer">
+						<span class="dark-red">Newer</span><span class="decorative-marker">//</span>
+						<a class="paging-link" href="/post/random-quote-part-I/">Random Quote Part I</a>
+		            </div>
+		            
+
+					
+					<div class="paging-older">
+						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
+			            <a class="paging-link" href="/post/discovering-flexbox/">Discovering Flexbox</a>
+		            </div>
+		            
+	            </div>
+            
+          </section>
+          
+          	<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ryanscodingblog';
+    var disqus_identifier = '\/post\/navigation-header-with-flexbox\/';
+    var disqus_title = 'Navigation Header with Flexbox';
+    var disqus_url = '\/post\/navigation-header-with-flexbox\/';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+          
+        
+      <div class="footer">
+	<hr class="thin" />
+	<div class="pure-menu pure-menu-horizontal pure-menu-open">
+		<ul class="footer-menu">
+		
+		</ul>
+	</div>
+
+	<p>&copy; 2017. All rights reserved.</p>
+</div>
+    </div>
+  </div>
+	
+
+	
+
+  
+</body>
+</html>

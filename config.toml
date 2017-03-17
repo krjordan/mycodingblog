@@ -1,0 +1,34 @@
+languageCode = "en-us"
+title = "My Coding Blog"
+baseurl = "/"
+disqusShortname = "ryanscodingblog"
+canonifyURLs = true
+theme = "my-hugo-redlounge"
+
+[params]
+  sidebarTitle = "My Coding Blog"
+  sidebartagline = "This is where I post about what I've learned in my career as a web developer. I also post tutorials and other random, but hopefully useful things, which can benefit beginners and experts alike."
+  gaid = "UA-67235996-1"
+
+[[menu.main]]
+  name = "Portfolio"
+  url = "http://krjordan.co"
+
+[[menu.main]]
+  name = "About Me"
+  url = "/about"
+
+[[menu.social]]
+  pre = "<i class='fa fa-github fa-2x'></i>"
+  url = "https://github.com/krjordan"
+  identifier = "Github"
+
+[[menu.social]]
+  pre = "<i class='fa fa-twitter fa-2x'></i>"
+  url = "https://twitter.com/RyanJ1500"
+  identifier = "Twitter"
+
+[[menu.social]]
+  pre = "<i class='fa fa-codepen fa-2x'></i>"
+  url = "http://codepen.io/krjordan/pens/public/"
+  identifier = "CodePen"

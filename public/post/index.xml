@@ -1,0 +1,1518 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on My Coding Blog</title>
+    <link>/post/index.xml</link>
+    <description>Recent content in Posts on My Coding Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 09 Feb 2017 21:27:17 -0600</lastBuildDate>
+    <atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Moving to Hugo</title>
+      <link>/post/moving-to-hugo/</link>
+      <pubDate>Thu, 09 Feb 2017 21:27:17 -0600</pubDate>
+      
+      <guid>/post/moving-to-hugo/</guid>
+      <description>
+
+&lt;p&gt;I have decided to move my blog from &lt;a href=&#34;https://ghost.org/&#34;&gt;Ghost&lt;/a&gt; to &lt;a href=&#34;https://gohugo.io/&#34;&gt;Hugo&lt;/a&gt;. I have enjoyed using Ghost, but I wanted to play around with some static site generators and host it with &lt;a href=&#34;https://pages.github.com/&#34;&gt;GitHub Pages&lt;/a&gt;. I have been using a Ghost, &lt;a href=&#34;http://docker.io&#34;&gt;Docker&lt;/a&gt; and &lt;a href=&#34;http://digitalocean.com&#34;&gt;Digital Ocean&lt;/a&gt; setup and have enjoyed it, but it was time to break something.&lt;/p&gt;
+
+&lt;h2 id=&#34;hugo&#34;&gt;Hugo&lt;/h2&gt;
+
+&lt;p&gt;After doing some research and playing around with a few different static site generators (&lt;a href=&#34;http://cryogenweb.org/&#34;&gt;Cryogen&lt;/a&gt;, &lt;a href=&#34;https://github.com/gatsbyjs/gatsby&#34;&gt;GatsbyJS&lt;/a&gt;, &lt;a href=&#34;https://hexo.io&#34;&gt;Hexo&lt;/a&gt; and &lt;a href=&#34;https://phenomic.io&#34;&gt;Phenomic&lt;/a&gt;, to name a few), I decided Hugo worked best for my needs. It is easy to get set up and there are quite a few good looking &lt;a href=&#34;http://themes.gohugo.io/&#34;&gt;themes&lt;/a&gt;. I was up and running quickly and was able to copy and paste my blog content over from my Ghost blog. I haven&amp;rsquo;t been writing much, therefore I didn&amp;rsquo;t have much to copy over, but if you have a lot of content, they have a few &lt;a href=&#34;https://gohugo.io/tools/&#34;&gt;tools&lt;/a&gt; that can help ease the pain of transferring your content.&lt;/p&gt;
+
+&lt;p&gt;Once I had my blog looking fancy, I decided it was time to get it up and running with GitHub Pages. This is where I ran into some hiccups. Of course, an easy solution would be to checkout my &lt;code class=&#34;language-none&#34;&gt;gh-pages&lt;/code&gt; branch and run &lt;code class=&#34;language-none&#34;&gt;hugo --themes=MY_THEME&lt;/code&gt;, then delete everything except the &lt;code class=&#34;language-none&#34;&gt;/public&lt;/code&gt; directory. I don&amp;rsquo;t like this option and would prefer to just have it deploy when I do a &lt;code class=&#34;language-git&#34;&gt;git push&lt;/code&gt;. So I opened up my trusty browser and started searching for a better solution.&lt;/p&gt;
+
+&lt;h2 id=&#34;wercker&#34;&gt;Wercker&lt;/h2&gt;
+
+&lt;p&gt;I briefly tried using &lt;a href=&#34;https://travis-ci.org/&#34;&gt;Travis CI&lt;/a&gt;, but I couldn&amp;rsquo;t figure out how to get it to work properly. I have very limited experience with continuous integration tools and this was probably my downfall. However, &lt;a href=&#34;http://www.wercker.com/&#34;&gt;Wercker&lt;/a&gt; was fairly straightforward once I started figuring things out. I have two pipelines set up to build one after another once I push to the &lt;code class=&#34;language-none&#34;&gt;master&lt;/code&gt; branch. The first pipeline builds the hugo site and the second deploys it to my &lt;code class=&#34;language-none&#34;&gt;gh-pages&lt;/code&gt; branch. I have forked the theme I&amp;rsquo;m using and made a few small changes to it to suit my needs. So during my build process, I pull that from my forked repository.&lt;/p&gt;
+
+&lt;h3 id=&#34;setting-up-wercker&#34;&gt;Setting Up Wercker&lt;/h3&gt;
+
+&lt;p&gt;I created a new application in &lt;a href=&#34;http://www.wercker.com/&#34;&gt;Wercker&lt;/a&gt; and linked it to my repository that houses the code for my Hugo blog. The first pipeline I created was a build pipeline. I added a &lt;code class=&#34;language-none&#34;&gt;$GIT_TOKEN&lt;/code&gt; environment variable to both the build and deploy pipelines. You will need to generate a token in your &lt;a href=&#34;https://github.com/settings/tokens&#34;&gt;GitHub Developer Settings&lt;/a&gt; and add it as the value in Wercker. Make sure to check the &lt;code class=&#34;language-none&#34;&gt;repo&lt;/code&gt; checkbox. In the &lt;code class=&#34;language-none&#34;&gt;Workflows&lt;/code&gt; tab, I clicked the &lt;code class=&#34;language-none&#34;&gt;Add new pipeline&lt;/code&gt; and added a deploy pipeline. Then I chained them together by clicking the &lt;code class=&#34;language-none&#34;&gt;+&lt;/code&gt; next to the build pipeline and added my deploy pipeline.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m using the &lt;code class=&#34;language-none&#34;&gt;arjen/hugo-build&lt;/code&gt; and &lt;code class=&#34;language-none&#34;&gt;leipert/git-push&lt;/code&gt; scripts to help out with building and deploying my blog. My &lt;code class=&#34;language-none&#34;&gt;wercker.yml&lt;/code&gt; file is as follows:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;box: debian
+build:
+	steps:
+		- script:
+			name: install git
+			code: |
+				apt-get update
+				apt-get -y install git
+		- script:
+			name: download theme
+			code: |
+				git clone https://github.com/krjordan/hugo-redlounge.git themes/hugo-redlounge
+				rm -rf themes/hugo-redlounge/.git
+		- arjen/hugo-build@1.14.1:
+			version: &amp;quot;0.18.1&amp;quot; 			# Hugo version
+			theme: hugo-redlounge
+			disable_pygments: true		# Disable pygments because I&#39;m using Prism.js
+
+deploy:
+	steps:
+		- script:
+			name: install git
+			code: |
+				apt-get update &amp;amp;&amp;amp; apt-get install git -y
+		- leipert/git-push:
+			gh_oauth: $GIT_TOKEN
+			basedir: public
+			clean_removed_files: true
+			branch: gh-pages
+			repo: krjordan/personal-blog
+			gh_pages_domain: mycodingblog.com    # Optional Custom Domain
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;triggering-the-build&#34;&gt;Triggering the Build&lt;/h2&gt;
+
+&lt;p&gt;Once this is set up, it should automatically build and push the &lt;code class=&#34;language-none&#34;&gt;/public&lt;/code&gt; directory contents to the &lt;code class=&#34;language-none&#34;&gt;gh-pages&lt;/code&gt; branch. It should also set up a CNAME file with the domain name specified with the &lt;code class=&#34;language-none&#34;&gt;gh_pages_domain&lt;/code&gt; variable.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;I&amp;rsquo;m happy with the overall setup. Setting up Hugo was fairly quick and easy. Deploying it, not so much, but I was finally able to get everything up and running like I wanted. So, I broke some things, fixed some things and got a new theme for my blog.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Getting Started in Web Development</title>
+      <link>/post/getting-started-in-web-development/</link>
+      <pubDate>Thu, 04 Aug 2016 15:04:04 -0600</pubDate>
+      
+      <guid>/post/getting-started-in-web-development/</guid>
+      <description>&lt;p&gt;Recently, I was asked by a friend of mine how he would go about getting started in web development. So, I figured I would write a blog post on it and help him out, along with anyone else who might stumble across this.&lt;/p&gt;
+
+&lt;p&gt;I started out using &lt;a href=&#34;https://www.codeschool.com/&#34;&gt;Code School&lt;/a&gt; and &lt;a href=&#34;https://www.codeschool.com/&#34;&gt;Treehouse&lt;/a&gt;. I read a ton of blog posts and fumbled my way through books reading about a lot of things I didn&amp;rsquo;t understand. I also tried to complete every tutorial I came across. Finally, I found &lt;a href=&#34;http://www.theodinproject.com/&#34;&gt;The Odin Project&lt;/a&gt; which explains things in a more organized way and gives you a learning map, if you will.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;p&gt;Now, there is &lt;a href=&#34;https://www.freecodecamp.com&#34;&gt;FreeCodeCamp&lt;/a&gt;. They have a learning map and a forum and their own chat for people to go and ask questions. You can use your browser to complete the exercises and it will give you quick right/wrong feedback. FreeCodeCamp is great for beginners and starts you out assuming you know nothing about coding.&lt;/p&gt;
+
+&lt;p&gt;If I were to do it all over again, I would start out using &lt;a href=&#34;https://www.freecodecamp.com&#34;&gt;FreeCodeCamp&lt;/a&gt; and supplement it with &lt;a href=&#34;http://www.theodinproject.com/&#34;&gt;The Odin Project&lt;/a&gt;. Learn what &lt;a href=&#34;https://github.com/&#34;&gt;Github&lt;/a&gt; is and how to use git and the command line. Build as much as you can and contribute to open source projects. Look for typos in the README.md files or simple CSS bugs. Some projects have special labels for easy fixes and beginners.&lt;/p&gt;
+
+&lt;p&gt;Another good resource is YouTube. Unfortunately, bad habits can be formed by watching the wrong videos, but once you figure out who is who and what is considered good practice, they can be a great source of information.&lt;/p&gt;
+
+&lt;p&gt;Becoming a web developer can be frustrating and time consuming, but it is also fun and rewarding. Web technology is constantly changing and keeping up with it all is challenging. If you think you&amp;rsquo;re up for a challenge, give &lt;a href=&#34;https://www.freecodecamp.com&#34;&gt;FreeCodeCamp&lt;/a&gt; a try. What&amp;rsquo;s the worst that can happen?&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Email Newsletter Adventure</title>
+      <link>/post/email-newsletter-adventure/</link>
+      <pubDate>Wed, 01 Jun 2016 15:05:19 -0600</pubDate>
+      
+      <guid>/post/email-newsletter-adventure/</guid>
+      <description>&lt;p&gt;I was recently tasked with building out an email newsletter. Honestly, I was dreading the task. Luckily, I did a bit of research before I started out on this adventure and found &lt;a href=&#34;http://foundation.zurb.com/emails.html&#34;&gt;Foundation for Emails&lt;/a&gt;. It&amp;rsquo;s well documented and even has a &lt;a href=&#34;http://foundation.zurb.com/emails/docs/sass-guide.html&#34;&gt;CLI&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Getting started is as simple as &lt;code class=&#34;language-none&#34;&gt;npm install -g foundation cli&lt;/code&gt; and then &lt;code class=&#34;language-none&#34;&gt;foundation new --framework emails&lt;/code&gt;. Once complete, you are ready to start coding an email using Inky, Foundation&amp;rsquo;s email templating language. Inky allows you to write &lt;code&gt;&amp;lt;column&amp;gt;&lt;/code&gt; and &lt;code&gt;&amp;lt;row&amp;gt;&lt;/code&gt; instead of writing out your emails in a table.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;p&gt;So basically, Inky turns this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;&amp;lt;container&amp;gt;
+  &amp;lt;row&amp;gt;
+    &amp;lt;columns&amp;gt;This is a column.&amp;lt;/columns&amp;gt;
+  &amp;lt;/row&amp;gt;
+&amp;lt;/container&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Into this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;&amp;lt;table class=&amp;quot;container&amp;quot;&amp;gt;
+  &amp;lt;tbody&amp;gt;
+    &amp;lt;tr&amp;gt;
+      &amp;lt;td&amp;gt;
+        &amp;lt;table class=&amp;quot;row&amp;quot;&amp;gt;
+          &amp;lt;tbody&amp;gt;
+            &amp;lt;tr&amp;gt;
+              &amp;lt;th class=&amp;quot;small-12 large-12 columns first last&amp;quot;&amp;gt;
+                &amp;lt;table&amp;gt;
+                  &amp;lt;tr&amp;gt;
+                    &amp;lt;th&amp;gt;This is a column.&amp;lt;/th&amp;gt;
+                    &amp;lt;th class=&amp;quot;expander&amp;quot;&amp;gt;&amp;lt;/th&amp;gt;
+                  &amp;lt;/tr&amp;gt;
+                &amp;lt;/table&amp;gt;
+              &amp;lt;/th&amp;gt;
+            &amp;lt;/tr&amp;gt;
+          &amp;lt;/tbody&amp;gt;
+        &amp;lt;/table&amp;gt;
+      &amp;lt;/td&amp;gt;
+    &amp;lt;/tr&amp;gt;
+  &amp;lt;/tbody&amp;gt;
+&amp;lt;/table&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As you can see, this makes things so much easier.&lt;/p&gt;
+
+&lt;p&gt;While in development, you run &lt;code class=&#34;language-none&#34;&gt;npm start&lt;/code&gt; to run the gulp tasks that watch and automatically update the browser. Once complete, use &lt;code class=&#34;language-none&#34;&gt;npm run build&lt;/code&gt; to inline all of your CSS into your HTML. Then &lt;code class=&#34;language-none&#34;&gt;npm run zip&lt;/code&gt; to zip the file to get it ready to submit to your email service provider of choice.&lt;/p&gt;
+
+&lt;p&gt;This saved me a lot of time and effort and for that I&amp;rsquo;d like to thank the guys over at &lt;a href=&#34;http://foundation.zurb.com/&#34;&gt;Zurb&lt;/a&gt;! You should check it out when you get a chance!&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Ghost &amp; Docker</title>
+      <link>/post/ghost-docker/</link>
+      <pubDate>Thu, 31 Dec 2015 15:03:02 -0600</pubDate>
+      
+      <guid>/post/ghost-docker/</guid>
+      <description>&lt;p&gt;Since I have had this blog up and running, I&amp;rsquo;ve been using ghost with a &lt;a href=&#34;https://www.digitalocean.com/&#34;&gt;Digital Ocean&lt;/a&gt; virtual machine. If you&amp;rsquo;re looking to go that route, I have written a quick tutorial on that &lt;a href=&#34;http://mycodingblog.com/up-and-running-with-ghost-and-digital-ocean/&#34;&gt;here&lt;/a&gt;. I have not had any issues, but since I have been using &lt;a href=&#34;https://www.docker.com/&#34;&gt;Docker&lt;/a&gt; more and more, I decided it was finally time to throw my blog into a container. I have to admit, it took a few days and a bit of research. Maybe I&amp;rsquo;m still new at this whole coding thing, I know I have a ton to learn, but seriously?&lt;/p&gt;
+
+&lt;p&gt;I ran into a few hiccups, but I did finally find a solution. I am using the &lt;a href=&#34;https://hub.docker.com/_/ghost/&#34;&gt;Official Docker Ghost Image&lt;/a&gt;. It briefly describes how to get it up and running. Well, almost&amp;hellip; The commands given will end up giving you an error:&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-none&#34;&gt;ERROR: Unable to access Ghost&#39;s content path:
+	EACCES: permission denied, open &#39;/usr/src/ghost/content/apps/ebc538ae3ae45772&#39;
+
+Check that the content path exists and file system permissions are correct.
+Help and documentation can be found at http://support.ghost.org.
+
+npm info ghost@0.7.2 Failed to exec start script
+npm ERR! Linux 3.10.94-1.el6.elrepo.x86_64
+npm ERR! argv &amp;quot;/usr/local/bin/node&amp;quot; &amp;quot;/usr/local/bin/npm&amp;quot; &amp;quot;start&amp;quot;
+npm ERR! node v4.2.3
+npm ERR! npm  v2.14.7
+npm ERR! code ELIFECYCLE
+npm ERR! ghost@0.7.2 start: `node index`
+npm ERR! Exit status 235
+npm ERR!
+npm ERR! Failed at the ghost@0.7.2 start script &#39;node index&#39;.
+npm ERR! This is most likely a problem with the ghost package,
+npm ERR! not with npm itself.
+npm ERR! Tell the author that this fails on your system:
+npm ERR!     node index
+npm ERR! You can get their info via:
+npm ERR!     npm owner ls ghost
+npm ERR! There is likely additional logging output above.
+npm ERR! Linux 3.10.94-1.el6.elrepo.x86_64
+npm ERR! argv &amp;quot;/usr/local/bin/node&amp;quot; &amp;quot;/usr/local/bin/npm&amp;quot; &amp;quot;start&amp;quot;
+npm ERR! node v4.2.3
+npm ERR! npm  v2.14.7
+npm ERR! path npm-debug.log.7da2e9feb6af80ea1c45d89105a542fd
+npm ERR! code EACCES
+npm ERR! errno -13
+npm ERR! syscall open
+
+npm ERR! Error: EACCES: permission denied, open &#39;npm-debug.log.7da2e9feb6af80ea1c45d89105a542fd&#39;
+npm ERR!     at Error (native)
+npm ERR!  { [Error: EACCES: permission denied, open &#39;npm-debug.log.7da2e9feb6af80ea1c45d89105a542fd&#39;]
+npm ERR!   errno: -13,
+npm ERR!   code: &#39;EACCES&#39;,
+npm ERR!   syscall: &#39;open&#39;,
+npm ERR!   path: &#39;npm-debug.log.7da2e9feb6af80ea1c45d89105a542fd&#39; }
+npm ERR!
+npm ERR! Please try running this command again as root/Administrator.
+
+npm ERR! Please include the following file with any support request:
+npm ERR!     /usr/src/ghost/npm-debug.log
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Reading the comments didn&amp;rsquo;t help me much, but did get me pointed in the right direction. It appears that ghost has permission issues when running in production. However, &lt;a href=&#34;https://github.com/snnd&#34;&gt;@snnd&lt;/a&gt; posted this little &lt;a href=&#34;https://github.com/snnd/docker-ghost-bundle&#34;&gt;gem&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;So I did what he said and it didn&amp;rsquo;t work. I had to make some more changes to the &lt;code class=&#34;language-none&#34;&gt;start.sh&lt;/code&gt; file. In all fairness, it is most likely my fault, but I was able to get it to work.&lt;/p&gt;
+
+&lt;h2 id=&#34;let-s-make-a-ghost-container&#34;&gt;Let&amp;rsquo;s Make a Ghost Container!&lt;/h2&gt;
+
+&lt;p&gt;Be sure to copy your &lt;code class=&#34;language-none&#34;&gt;content&lt;/code&gt; folder if you already have a ghost blog up and running. If you don&amp;rsquo;t, you can add these &lt;a href=&#34;https://github.com/TryGhost/Ghost/tree/master/content&#34;&gt;folders&lt;/a&gt; or use the ones from the &lt;a href=&#34;https://github.com/snnd/docker-ghost-bundle&#34;&gt;repo&lt;/a&gt; mentioned earlier and place them where ever you want your ghost files to live on your host. You will also need a config file. I did a &lt;code class=&#34;language-git&#34;&gt;git clone &lt;a href=&#34;https://github.com/snnd/docker-ghost-bundle.git&#34;&gt;https://github.com/snnd/docker-ghost-bundle.git&lt;/a&gt;&lt;/code&gt; and changed the directory name to &lt;code class=&#34;language-none&#34;&gt;mycodingblog/&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;I also added all of my data, images and theme files to the appropriate directories. Next, I edited the &lt;code class=&#34;language-none&#34;&gt;mycodingblog/config/config.js&lt;/code&gt; file:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;var path = require(&#39;path&#39;),
+		config;
+
+config = {
+	production: {
+		url: &#39;http://mycodingblog.com/&#39;,
+		mail: {},
+		database: {
+			client: &#39;sqlite3&#39;,
+			connection: {
+				filename: path.join(&#39;/usr/src/ghost/content/data/ghost.db&#39;)
+			},
+			debug: true
+		},
+
+		server: {
+			host: &#39;0.0.0.0&#39;,
+			port: &#39;2368&#39;
+		}
+	}
+};
+
+module.exports = config;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then I edited the &lt;code class=&#34;language-none&#34;&gt;start.sh&lt;/code&gt; file:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;#!/bin/bash
+
+docker run -d --name mycodingblog \
+	-p 8080:2368 \
+	-e VIRTUAL_HOST=mycodingblog.com \
+	-e NODE_ENV=production \
+	-v /mycodingblog/content/themes:/usr/src/ghost/content/themes \
+	-v /mycodingblog/content/apps:/usr/src/ghost/content/apps \
+	-v /mycodingblog/content/images:/usr/src/ghost/content/images \
+	-v /mycodingblog/content/data:/usr/src/ghost/content/data \
+	-v /mycodingblog/config:/var/lib/ghost \
+	ghost
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then I typed &lt;code class=&#34;language-none&#34;&gt;./start.sh&lt;/code&gt;. Of course this was after playing around with it for a few hours. Make sure to use the &lt;code class=&#34;language-none&#34;&gt;-d&lt;/code&gt; flag to run in detached mode. It started up and told me to point my browser to &lt;code class=&#34;language-none&#34;&gt;&lt;a href=&#34;http://mycodingblog.com&#34;&gt;http://mycodingblog.com&lt;/a&gt;&lt;/code&gt;. So now you should have a ghost container up and running.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Node Email Templates</title>
+      <link>/post/node-email-templates/</link>
+      <pubDate>Tue, 29 Dec 2015 13:01:54 -0600</pubDate>
+      
+      <guid>/post/node-email-templates/</guid>
+      <description>&lt;p&gt;I have been looking for a straight forward way to use email templates in a contact form. I have searched and searched with no real success. So, I thought I would write a tutorial on how to build a (very!) simple contact page that uses an email template. This uses &lt;a href=&#34;http://expressjs.com/&#34;&gt;Express&lt;/a&gt;, &lt;a href=&#34;http://nodemailer.com/&#34;&gt;Nodemailer&lt;/a&gt; and &lt;a href=&#34;https://github.com/niftylettuce/node-email-templates&#34;&gt;node-email-templates&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;basic-file-structure&#34;&gt;Basic File Structure&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;├── app
+  ├── css
+    └── main.css
+  ├── templates
+    └── contact-request
+      ├── html.hbs
+      ├── style.css
+      └── text.hbs
+  └── index.html
+├── package.json
+└── server.js
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We will start out by adding &lt;a href=&#34;http://handlebarsjs.com/&#34;&gt;Handlebars&lt;/a&gt;, &lt;a href=&#34;http://expressjs.com/&#34;&gt;express&lt;/a&gt; and &lt;a href=&#34;https://github.com/niftylettuce/node-email-templates&#34;&gt;email-templates&lt;/a&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-none&#34;&gt;npm init
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Feel free to fill in the information or press enter until it is complete. I have my &lt;code class=&#34;language-none&#34;&gt;entry-point&lt;/code&gt; set as &lt;code class=&#34;language-none&#34;&gt;server.js&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-none&#34;&gt;npm install -S express email-templates handlebars
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This will install those packages and add them to our dependencies in the &lt;code class=&#34;language-none&#34;&gt;package.json&lt;/code&gt; file.&lt;/p&gt;
+
+&lt;h2 id=&#34;basic-styling-and-markup&#34;&gt;Basic Styling and Markup&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;&amp;lt;!-- app/index.html --&amp;gt;
+&amp;lt;body&amp;gt;
+  &amp;lt;div class=&amp;quot;alert&amp;quot;&amp;gt;&amp;lt;/div&amp;gt;
+  &amp;lt;input type=&amp;quot;text&amp;quot; id=&amp;quot;name&amp;quot; name=&amp;quot;name&amp;quot; placeholder=&amp;quot;Name&amp;quot;&amp;gt;
+  &amp;lt;input type=&amp;quot;email&amp;quot; name=&amp;quot;email&amp;quot; id=&amp;quot;email&amp;quot; placeholder=&amp;quot;Email&amp;quot;&amp;gt;
+  &amp;lt;textarea name=&amp;quot;message&amp;quot; id=&amp;quot;message&amp;quot; cols=&amp;quot;30&amp;quot; rows=&amp;quot;10&amp;quot; placeholder=&amp;quot;Enter your message.&amp;quot;&amp;gt;&amp;lt;/textarea&amp;gt;
+  &amp;lt;button id=&amp;quot;send-contact&amp;quot; type=&amp;quot;submit&amp;quot;&amp;gt;Send&amp;lt;/button&amp;gt;
+&amp;lt;/body&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-css&#34;&gt;/* app/css/main.css */
+* {
+  box-sizing: border-box;
+}
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding-top: 50px;
+  background-color: #ccc;
+}
+input {
+  margin-bottom: 20px;
+  width: 300px;
+  height: 25px;
+  font-size: 16px;
+  color: #3e3e3e;
+}
+textarea {
+  font-size: 16px;
+  width: 300px;
+  margin-bottom: 20px;
+  color: #3e3e3e;
+}
+button {
+  padding: 15px 25px;
+  font-size: 16px;
+  cursor: pointer;
+  color: #3e3e3e;
+}
+button:hover {
+  background-color: #3e3e3e;
+  color: #fefefe;
+}
+.alert {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  color: #fff;
+  margin: 20px;
+  padding: 15px;
+  border-radius: 5px;
+}
+.error {
+  background-color: #c43c35;
+  background-repeat: repeat-x;
+  background-image: linear-gradient(top, #ee5f5b, #c43c35);
+  border-color: #c43c35 #c43c35 #882a25;
+}
+.success {
+  background-color: #57a957;
+  background-repeat: repeat-x;
+  background-image: linear-gradient(top, #62c462, #57a957);
+  border-color: #57a957 #57a957 #3d773d;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;setting-up-express&#34;&gt;Setting up Express&lt;/h2&gt;
+
+&lt;p&gt;Since we are using express, it&amp;rsquo;s pretty simple to get our server going. You can follow the &lt;a href=&#34;http://expressjs.com/en/starter/installing.html&#34;&gt;getting started&lt;/a&gt; and &lt;a href=&#34;http://expressjs.com/en/starter/hello-world.html&#34;&gt;hello world&lt;/a&gt; quick tutorials. Below is what our base &lt;code class=&#34;language-none&#34;&gt;server.js&lt;/code&gt; file will currently look like.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;// server.js
+var express = require(&#39;express&#39;);
+var app     = express();
+
+app.use(express.static(&#39;app&#39;));
+
+var server = app.listen(8080, function(){
+  var host = &#39;localhost&#39;;
+  var port = server.address().port;
+
+  console.log(&#39;Example app listening at http://%s:%s&#39;, host, port);
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now you should be able to view the &lt;code class=&#34;language-none&#34;&gt;index.html&lt;/code&gt; contact page in your browser (&lt;code class=&#34;language-none&#34;&gt;&lt;a href=&#34;http://localhost:8080&#34;&gt;http://localhost:8080&lt;/a&gt;&lt;/code&gt;) by typing &lt;code class=&#34;language-none&#34;&gt;node server.js&lt;/code&gt; in your terminal.&lt;/p&gt;
+
+&lt;h2 id=&#34;setting-up-nodemailer&#34;&gt;Setting up Nodemailer&lt;/h2&gt;
+
+&lt;p&gt;So we are using &lt;a href=&#34;http://nodemailer.com/&#34;&gt;Nodemailer&lt;/a&gt; to help us send our emails. In order to use the package, we will need to add it to our dependencies and install it:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-none&#34;&gt;npm install -S nodemailer@0.7.1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To get a better understanding of &lt;a href=&#34;http://nodemailer.com/&#34;&gt;Nodemailer&lt;/a&gt;, I would encourage you to read through the documentation as I will just highlight the basics to get our simple contact page up and running. We will use the basic example given by &lt;a href=&#34;http://nodemailer.com/&#34;&gt;Nodemailer&lt;/a&gt; in our project.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;// server.js
+var express    = require(&#39;express&#39;);
+var app	    = express();
+var nodemailer = require(&#39;nodemailer&#39;);
+
+app.use(express.static(&#39;app&#39;));
+
+// nodemailer
+var smtpTransport = nodemailer.createTransport(&#39;SMTP&#39;, {
+  service: &amp;quot;Gmail&amp;quot;,
+  auth: {
+    user: &#39;user@gmail.com&#39;,
+    pass: &#39;password&#39;
+  }
+});
+
+var mailOptions = {
+  from: &#39;Fred Foo &amp;lt;foo@blurdybloop.com&amp;gt;&#39;, // Sender Address
+  to: &#39;user@gmail.com&#39;,
+  subject: &#39;Contact Request&#39;, // Subject Line
+  text: &#39;Hello World!&#39;, // Plaintext Body
+  html: &#39;&amp;lt;b&amp;gt;Hello Word! &amp;lt;/b&amp;gt;&#39; // HTML Body
+}
+
+smtpTransport.sendMail(mailOptions, function (error, response) {
+  if (error) {
+    console.log(error);
+  } else{
+    console.log(&#39;Message sent: &#39; + response.message);
+  }
+});
+
+var server = app.listen(8080, function () {
+  var host = &#39;localhost&#39;;
+  var port = server.address().port;
+
+  console.log(&#39;Example app listening at http://%s:%s&#39;, host, port);
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now when you startup your server, &lt;code class=&#34;language-none&#34;&gt;node server.js&lt;/code&gt;, you should receive an email (assuming you added your email address and password to the &lt;code class=&#34;language-none&#34;&gt;user:&lt;/code&gt; and &lt;code class=&#34;language-none&#34;&gt;pass:&lt;/code&gt; respectively.&lt;/p&gt;
+
+&lt;p&gt;Now that we know it works, we need to wrap &lt;code class=&#34;language-none&#34;&gt;mailOptions&lt;/code&gt; and &lt;code class=&#34;language-javascript&#34;&gt;smtpTransport.sendMail&lt;/code&gt; with a &lt;code class=&#34;language-javascript&#34;&gt;get()&lt;/code&gt; method so we don&amp;rsquo;t get an email every time we start up our app.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;// server.js
+var express    = require(&#39;express&#39;);
+var app	    = express();
+var nodemailer = require(&#39;nodemailer&#39;);
+
+app.use(express.static(&#39;app&#39;));
+
+// nodemailer
+var smtpTransport = nodemailer.createTransport(&#39;SMTP&#39;, {
+  service: &amp;quot;Gmail&amp;quot;,
+  auth: {
+    user: &#39;user@gmail.com&#39;,
+    pass: &#39;password&#39;
+  }
+});
+
+app.get(&#39;/sendContact&#39;, function (req, res) {
+  var mailOptions = {
+    from: &#39;Fred Foo &amp;lt;foo@blurdybloop.com&amp;gt;&#39;, // Sender Address
+    to: &#39;user@gmail.com&#39;,
+    subject: &#39;Contact Request&#39;, // Subject Line
+    text: &#39;Hello World!&#39;, // Plaintext Body
+    html: &#39;&amp;lt;b&amp;gt;Hello Word! &amp;lt;/b&amp;gt;&#39; // HTML Body
+}
+
+  smtpTransport.sendMail(mailOptions, function (error, response) {
+    if (error) {
+      console.log(error);
+    } else{
+      console.log(&#39;Message sent: &#39; + response.message);
+    }
+  });
+});
+
+var server = app.listen(8080, function () {
+  var host = &#39;localhost&#39;;
+  var port = server.address().port;
+
+  console.log(&#39;Example app listening at http://%s:%s&#39;, host, port);
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;using-the-form-data&#34;&gt;Using the Form Data&lt;/h2&gt;
+
+&lt;p&gt;Next we will want to use our form to capture the data the user will input. For simplicity, I&amp;rsquo;ll add jQuery to our project and add another file called &lt;code class=&#34;language-none&#34;&gt;main.js&lt;/code&gt; to &lt;code class=&#34;language-none&#34;&gt;app/scripts/main.js&lt;/code&gt;. I&amp;rsquo;ll add jQuery by inserting it at the bottom of the &lt;code class=&#34;language-html&#34;&gt;&amp;lt;body&amp;gt;&lt;/code&gt; inside the &lt;code class=&#34;language-none&#34;&gt;index.html&lt;/code&gt; with &lt;code class=&#34;language-html&#34;&gt;&amp;lt;script src=&amp;ldquo;&lt;a href=&#34;https://code.jquery.com/jquery-2.1.4.min.js&amp;quot;&amp;gt;&#34;&gt;https://code.jquery.com/jquery-2.1.4.min.js&amp;quot;&amp;gt;&lt;/a&gt;&lt;/code&gt;&lt;code class=&#34;language-html&#34;&gt;&amp;lt;/script&amp;gt;&lt;/code&gt; along with &lt;code class=&#34;language-none&#34;&gt;&amp;lt;script src=&amp;ldquo;scripts/main.js&amp;rdquo;&amp;gt;&lt;/code&gt;&lt;code class=&#34;language-html&#34;&gt;&amp;lt;/script&amp;gt;&lt;/code&gt; just below it. Next we&amp;rsquo;ll create the &lt;code class=&#34;language-none&#34;&gt;main.js&lt;/code&gt; file.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;// app/scripts/main.js
+
+$(&#39;#send-contact&#39;).click(function (evt) {
+  evt.preventDefault();
+  var name = $(&#39;#name&#39;).val();
+  var email = $(&#39;#email&#39;).val();
+  var message = $(&#39;#message&#39;).val();
+
+  if (name !== &#39;&#39; &amp;amp;&amp;amp; email !== &#39;&#39; &amp;amp;&amp;amp; message != &#39;&#39;) {
+    $.get(&#39;http://localhost:8080/sendContact&#39;, {
+      name: name,
+      email: email,
+      message: message
+    }, function (data) {
+      if (data == &#39;sent&#39;) {
+        $(&#39;.alert&#39;).html(&#39;&amp;lt;strong&amp;gt;Success! &amp;lt;/strong&amp;gt; Your message has been sent!&#39;).addClass(&#39;success&#39;);
+      } else {
+        $(&#39;.alert&#39;).html(&amp;quot;&amp;lt;strong&amp;gt;Uh oh! &amp;lt;/strong&amp;gt; It looks like that didn&#39;t go through, let&#39;s try that again.&amp;quot;).addClass(&#39;error&#39;);
+      }
+    });
+  }
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;add-the-email-templates-to-server-js&#34;&gt;Add the Email Templates to Server.js&lt;/h2&gt;
+
+&lt;p&gt;We will now add node-email-templates to our server.js file. For completeness, I have added the entire server.js file:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;var express 	  = require(&#39;express&#39;);
+var app		   = express();
+var nodemailer    = require(&#39;nodemailer&#39;);
+var path	      = require(&#39;path&#39;);
+var EmailTemplate = require(&#39;email-templates&#39;).EmailTemplate;
+
+var templatesDir = path.resolve(__dirname, &#39;app/templates&#39;);
+
+app.use(express.static(&#39;app&#39;));
+
+// nodemailer
+var smtpTransport = nodemailer.createTransport(&#39;SMTP&#39;, {
+  service: &amp;quot;Gmail&amp;quot;,
+  auth: {
+    user: &#39;user@gmail.com&#39;,
+    pass: &#39;password&#39;
+  }
+});
+
+app.get(&#39;/sendContact&#39;, function (req, res) {
+  var template = new EmailTemplate(path.join(templatesDir, &#39;contact-request&#39;));
+  var locals = {
+    email: req.query.email,
+    name: req.query.name,
+    message: req.query.message
+  };
+
+  template.render(locals, function (err, results) {
+    if (err) {
+      return console.error(err);
+    }
+
+    smtpTransport.sendMail({
+      from: locals.email,
+      to: &#39;user@gmail.com&#39;,
+      subject: &#39;Contact Request&#39;,
+      html: results.html,
+      text: results.text
+    }, function (err, responseStatus) {
+      if (err) {
+        console.error(err);
+  res.end(&#39;error&#39;);
+      } else {
+        console.log(responseStatus.message);
+        res.end(&#39;sent&#39;);
+      }
+    });
+  });
+});
+
+var server = app.listen(8080, function () {
+  var host = &#39;localhost&#39;;
+  var port = server.address().port;
+
+  console.log(&#39;Example app listening at http://%s:%s&#39;, host, port);
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;email-templates&#34;&gt;Email Templates&lt;/h2&gt;
+
+&lt;p&gt;Our emails should now be sending, but in order to test them, we will need to add our templates. Unfortunately, with node-email-templates, there isn&amp;rsquo;t a way for us to easily style the templates without sending an email to ourselves. But to help shorten this tutorial, I&amp;rsquo;ll add some styling to our templates so we can test our email and wrap this tutorial up.&lt;/p&gt;
+
+&lt;p&gt;We will need to add an &lt;code class=&#34;language-none&#34;&gt;html.hbs&lt;/code&gt; and &lt;code class=&#34;language-none&#34;&gt;text.hbs&lt;/code&gt; to our &lt;code class=&#34;language-none&#34;&gt;templates/contact-request&lt;/code&gt; directory. We have the &lt;code class=&#34;language-none&#34;&gt;text.hbs&lt;/code&gt; for better support.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;&amp;lt;!-- app/templates/contact-request/html.hbs --&amp;gt;
+
+&amp;lt;div class=&amp;quot;container&amp;quot;&amp;gt;
+  &amp;lt;h3 class=&amp;quot;center&amp;quot;&amp;gt;Contact Request&amp;lt;/h3&amp;gt;
+  &amp;lt;p class=&amp;quot;center&amp;quot;&amp;gt;{{ name }} has filled out the contact form on your website with the following message:&amp;lt;/p&amp;gt;
+
+&amp;lt;blockquote&amp;gt;
+  &amp;lt;p&amp;gt;{{ message }}&amp;lt;/p&amp;gt;
+&amp;lt;/blockquote&amp;gt;
+
+&amp;lt;p class=&amp;quot;center small&amp;quot;&amp;gt;To respond to {{ name }}, you may reply directly to this email or send an email to {{ email }}.&amp;lt;/p&amp;gt;
+&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;&amp;lt;!-- app/templates/contact-request/text.hbs --&amp;gt;
+
+Contact Request
+
+{{ name }} has filled out the contact form on your website with the following message:
+
+{{ message }}
+
+To respond to {{ name }}, you may reply directly to this email or send an email to {{ email }}.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-css&#34;&gt;* {
+  box-sizing: border-box;
+}
+.container {
+  border: 1px solid #e5e3d8;
+  padding: 20px;
+  border-radius: 5px
+}
+h3,
+p {
+  color: #808284;
+  font-family: sans-serif;
+  line-height: 1.5em;
+}
+h3 {
+  font-size: 16px;
+}
+p {
+  font-size: 15px;
+}
+blockquote {
+  background: #f9f9f9;
+  border-left: 10px solid #ccc;
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
+}
+blockquote p {
+  display: inline;
+}
+.center {
+  text-align: center;
+}
+.small {
+  font-size: 10;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This should give us a nice template to use as a starting point. There is still plenty of work that needs to be done (form validation for starters), but this concludes this tutorial. You should have a working contact form with a nicely styled template. There are other options out there like &lt;a href=&#34;https://github.com/andrewrk/swig-email-templates&#34;&gt;Swig&lt;/a&gt; that allow us to view the changes to the template in a browser. I hope to have a tutorial of that up soon.&lt;/p&gt;
+
+&lt;p&gt;As always, feedback is welcome and if you run into any problems or have any questions, let me know in the comments below and I will try my best to help you out. I have added the code used in this tutorial to &lt;a href=&#34;https://github.com/krjordan/node-email&#34;&gt;github&lt;/a&gt; in case anyone wanted to play around with it or use it as a starting point.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Random Quote Part II</title>
+      <link>/post/random-quote-part-II/</link>
+      <pubDate>Mon, 30 Nov 2015 12:56:39 -0600</pubDate>
+      
+      <guid>/post/random-quote-part-II/</guid>
+      <description>&lt;p&gt;In part II of this tutorial, we will get this random quote generator working with some jQuery. If you haven&amp;rsquo;t read &lt;a href=&#34;/post/random-quote-part-I/&#34;&gt;part I&lt;/a&gt;, I would suggest doing so now as I won&amp;rsquo;t be covering any styling in this part of the tutorial.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;p&gt;So the html looks like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;&amp;lt;div class=&amp;quot;container&amp;quot;&amp;gt;
+  &amp;lt;h2&amp;gt;Random Quote Generator&amp;lt;/h2&amp;gt;
+  &amp;lt;a href=&amp;quot;#&amp;quot; id=&amp;quot;btn-quote&amp;quot;&amp;gt;Generate New Quote&amp;lt;/a&amp;gt;
+  &amp;lt;blockquote&amp;gt;
+    &amp;lt;p id=&amp;quot;quoteText&amp;quot;&amp;gt;&amp;lt;/p&amp;gt;
+    &amp;lt;cite&amp;gt;&amp;amp;mdash; &amp;lt;span id=&amp;quot;quoteAuthor&amp;quot;&amp;gt;&amp;lt;/span&amp;gt;
+      &amp;lt;span id=&amp;quot;btn-tweet&amp;quot;&amp;gt;
+        &amp;lt;i class=&amp;quot;fa fa-twitter&amp;quot;&amp;gt;&amp;lt;/i&amp;gt;
+      &amp;lt;/span&amp;gt;
+    &amp;lt;/cite&amp;gt;
+  &amp;lt;/blockquote&amp;gt;
+  &amp;lt;div class=&amp;quot;load&amp;quot;&amp;gt;
+    &amp;lt;i class=&amp;quot;fa fa-spinner fa-spin&amp;quot;&amp;gt;&amp;lt;/i&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/div&amp;gt;
+&amp;lt;footer&amp;gt;Powered by&amp;amp;nbsp;
+  &amp;lt;a href=&amp;quot;http://forismatic.com/en/&amp;quot;&amp;gt;Forismatic&amp;lt;/a&amp;gt;&amp;lt;/footer&amp;gt;
+&amp;lt;script src=&amp;quot;http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js&amp;quot;&amp;gt;&amp;lt;/script&amp;gt;
+&amp;lt;script src=&amp;quot;main.js&amp;quot;&amp;gt;&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Notice how we have added the &lt;code class=&#34;language-none&#34;&gt;script&lt;/code&gt; tags at the end of the &lt;code class=&#34;language-none&#34;&gt;body&lt;/code&gt;. Also notice that in order to use jQuery, we have to reference it in our HTML. So, we add the following to our HTML:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;&amp;lt;script src=&amp;quot;http://cdnjs.cloudflare.com/ajax/libs/jq&amp;lt;uery/2.1.3/jquery.min.js&amp;quot;&amp;gt;&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;jquery&#34;&gt;jQuery&lt;/h2&gt;
+
+&lt;p&gt;It&amp;rsquo;s time to add some jQuery. I&amp;rsquo;ve created a file called &lt;code class=&#34;language-none&#34;&gt;main.js&lt;/code&gt; in the root directory, to make things easier, and added:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;&amp;lt;script src=&amp;quot;main.js&amp;quot;&amp;gt;&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This tells the browser that we have an exterior JavaScript file it will need to look for.&lt;/p&gt;
+
+&lt;p&gt;Currently, if you followed along with the first tutorial, we have the following in our &lt;code class=&#34;language-none&#34;&gt;main.js&lt;/code&gt; file.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;$(document).ready(function() {
+  // Hide the loading icon
+  $(&#39;.load&#39;).hide();
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This hides the loading icon once the page is loaded. The &lt;code class=&#34;language-javascript&#34;&gt;$(&amp;lsquo;.load&amp;rsquo;)&lt;/code&gt; finds the elements with the class of &lt;code class=&#34;language-none&#34;&gt;load&lt;/code&gt; and hides them with jQuery&amp;rsquo;s &lt;code class=&#34;language-javascript&#34;&gt;.hide()&lt;/code&gt; method. For the time being, lets remove the &lt;code class=&#34;language-javascript&#34;&gt;$(&amp;lsquo;.load&amp;rsquo;).hide();&lt;/code&gt; so that our file now looks like:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;$(document).ready(function() {
+
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now we want to hide the &lt;code class=&#34;language-none&#34;&gt;blockquote&lt;/code&gt; element and show the loading icon as the quote is loading. So we will add the following code.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;$(document).ready(function() {
+  $(&#39;blockquote&#39;).hide();
+  $(&#39;.load&#39;).show();
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Once again, when the page loads, the browser locates the &lt;code class=&#34;language-none&#34;&gt;blockquote&lt;/code&gt; element and hides it with the &lt;code class=&#34;language-javascript&#34;&gt;.hide()&lt;/code&gt; jQuery method. Then it finds the elements with the &lt;code class=&#34;language-none&#34;&gt;load&lt;/code&gt; class and makes it visible with the &lt;code class=&#34;language-javascript&#34;&gt;.show()&lt;/code&gt; method. Now the &lt;code class=&#34;language-none&#34;&gt;blockquote&lt;/code&gt; should be hidden and the loading icon should be displayed.&lt;/p&gt;
+
+&lt;h2 id=&#34;get-the-quote&#34;&gt;Get the quote&lt;/h2&gt;
+
+&lt;p&gt;Let&amp;rsquo;s write the function that gets the quote from &lt;a href=&#34;http://forismatic.com/en/&#34;&gt;forismatic&lt;/a&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;$(document).ready(function() {
+  // Hide the empty blockquote and show the loading icon.
+  $(&#39;blockquote&#39;).hide();
+  $(&#39;.load&#39;).show();
+});
+
+// Get the quote
+var getQuote = function() {
+
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Inside the &lt;code class=&#34;language-javascript&#34;&gt;getQuote()&lt;/code&gt; function we want to do the following:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Hide the loading icon&lt;/li&gt;
+&lt;li&gt;Show the blockquote element&lt;/li&gt;
+&lt;li&gt;Add the quote to the blockquote&lt;/li&gt;
+&lt;li&gt;If there is an author, display the author&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;We will use jQuery&amp;rsquo;s &lt;code class=&#34;language-javascript&#34;&gt;$.ajax()&lt;/code&gt; method to accomplish this.&lt;/p&gt;
+
+&lt;p&gt;So let&amp;rsquo;s get started (&lt;code class=&#34;language-none&#34;&gt;main.js&lt;/code&gt;):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;.
+.
+.
+var getQuote = function() {
+  $.ajax({
+    url: &#39;&#39;,
+    dataType: &#39;&#39;,
+    // If the request is successful
+    success: function (data){
+      // Hide the loading icon
+      // Show the blockquote element
+      // Add the quote to the blockquote
+      // If there is an author, display the author
+    },
+    // Set up a way to gracefully handle errors
+    error: function (xhr, status, error){
+      console.log(&#39;xhr: &#39; + xhr + &#39;\nStatus: &#39; + status + &#39;\nError: &#39; + error);
+    }
+  });
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The &lt;code class=&#34;language-javascript&#34;&gt;.ajax()&lt;/code&gt; method needs a few things before it can do anything for us. It will need the &lt;code class=&#34;language-none&#34;&gt;url&lt;/code&gt; that it needs to request the data from. It will need the &lt;code class=&#34;language-none&#34;&gt;dataType&lt;/code&gt; of the data we are requesting. It uses the &lt;code class=&#34;language-none&#34;&gt;success&lt;/code&gt; method to return the data to us in the way we specify and the &lt;code class=&#34;language-none&#34;&gt;error&lt;/code&gt; method to gracefully tell us something went wrong. Visiting &lt;a href=&#34;http://forismatic.com/en/api&#34;&gt;forismatic.com/en/api&lt;/a&gt;, will give us an idea of what query parameters are needed to make a request. We will need to have &lt;code class=&#34;language-none&#34;&gt;&lt;a href=&#34;http://api.forismatic.com/api/1.0/&#34;&gt;http://api.forismatic.com/api/1.0/&lt;/a&gt;&lt;/code&gt; for starters. We will use their getQuote method &lt;code class=&#34;language-none&#34;&gt;?method=getQuote&lt;/code&gt; along with a format and language. Our &lt;code class=&#34;language-none&#34;&gt;url&lt;/code&gt; will be &lt;code class=&#34;language-none&#34;&gt;&lt;a href=&#34;http://api.forismatic.com/api/1.0?method=getQuote&amp;amp;format=jsonp&amp;amp;lang=en&#34;&gt;http://api.forismatic.com/api/1.0?method=getQuote&amp;amp;format=jsonp&amp;amp;lang=en&lt;/a&gt;&lt;/code&gt;. Notice the query parameters are separated by an ampersand (&amp;amp;).&lt;/p&gt;
+
+&lt;p&gt;We can test our api call by logging the data out to the console.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;var getQuote = function (){
+  $.ajax({
+    url: &#39;http://api.forismatic.com/api/1.0/?method=getQuote&amp;amp;format=jsonp&amp;amp;lang=en&#39;,
+    dataType: &#39;jsonp&#39;,
+    // If the request is successful
+    success: function (data){
+      console.log(data);
+    },
+    error: function (xhr, status, error){
+      console.log(&#39;xhr: &#39; + xhr + &#39;\nStatus: &#39; + status + &#39;\nError: &#39; + error);
+    }
+  });
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We can test this by opening the &lt;code class=&#34;language-none&#34;&gt;index.html&lt;/code&gt; in Chrome, opening the Developer tools and clicking on the &lt;code class=&#34;language-none&#34;&gt;Console&lt;/code&gt;. We can call the &lt;code class=&#34;language-javascript&#34;&gt;getQuote();&lt;/code&gt; function by typing it into the console. It will return a somewhat uninformative error. However, looking over the documentation again, you might notice that since we are using &lt;code class=&#34;language-none&#34;&gt;jsonp&lt;/code&gt; we will also need to have the jsonp query parameter. So when we add &lt;code class=&#34;language-none&#34;&gt;&amp;amp;jsonp=?&lt;/code&gt; at the end of our &lt;code class=&#34;language-none&#34;&gt;url&lt;/code&gt;, it should work. The full url will look like &lt;code class=&#34;language-none&#34;&gt;&lt;a href=&#34;http://api.forismatic.com/api/1.0/?method=getQuote&amp;amp;format=jsonp&amp;amp;lang=en&amp;amp;jsonp=?&#34;&gt;http://api.forismatic.com/api/1.0/?method=getQuote&amp;amp;format=jsonp&amp;amp;lang=en&amp;amp;jsonp=?&lt;/a&gt;&lt;/code&gt;. When we call this is the console, it should return a quote object.&lt;/p&gt;
+
+&lt;h2 id=&#34;looking-at-the-quote-object&#34;&gt;Looking at the quote object&lt;/h2&gt;
+
+&lt;p&gt;In the console of Chrome dev tools, you should see something like:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;getQuote();
+undefined
+
+Object {
+  quoteText: &amp;quot;Time is the most valuable thing a man can spend. &amp;quot;,
+  quoteAuthor: &amp;quot;Theophrastus &amp;quot;,
+  senderName: &amp;quot;&amp;quot;,
+  senderLink: &amp;quot;&amp;quot;,
+  quoteLink: &amp;quot;http://forismatic.com/en/2c9cbc5e2a/&amp;quot;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is how we will access the data inside the object:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;console.log(data.quoteText);
+console.log(data.quoteAuthor);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now that we know how to access the data inside the object, lets put it all together.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;var getQuote = function(){
+  $.ajax({
+    url: &#39;http://api.forismatic.com/api/1.0/?method=getQuote&amp;amp;format=jsonp&amp;amp;lang=en&amp;amp;jsonp=?&#39;,
+    dataType: &#39;jsonp&#39;,
+    // If the request is successful
+    success: function (data){
+      // Hide the loading icon
+      $(&#39;.load&#39;).hide();
+      // Show the blockquote element
+      $(&#39;blockquote&#39;).show();
+      // Add the quote to the #quoteText element
+      $(&#39;#quoteText&#39;).html(data.quoteText);
+      if (data.quoteAuthor !== &#39;&#39;){
+        // If there is an author
+        $(&#39;#quoteAuthor&#39;).html(data.quoteAuthor);
+      }
+      else{
+        // When there is no author
+        $(&#39;#quoteAuthor&#39;).html(&#39;Unknown&#39;);
+      }
+    },
+    // Set up a way to gracefully handle errors
+    error: function (xhr, status, error){
+      $(&#39;#quoteText&#39;).text(&#39;I\&#39;m not sure what happened there. Click again and let\&#39;s see if that does the trick!&#39;);
+      $(&#39;#quoteAuthor&#39;).text(&#39;Your Trusty Browser&#39;);
+    }
+  });
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And there you have it. The only thing new with this code is the &lt;code class=&#34;language-javascript&#34;&gt;html()&lt;/code&gt; method which just sets the html content for the element that was called. Now we will add an event listener and call it a day.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;$(document).ready(function()({
+  // Hide the empty blockquote and show the loading
+  // icon as we request another quote.
+  $(&#39;blockquote&#39;).hide();
+  $(&#39;.load&#39;).show();
+  getQuote();
+
+  // Do the same as above when the button is clicked.
+  $(&#39;#btn-quote&#39;).on(&#39;click&#39;, function(){
+    $(&#39;blockquote&#39;).hide();
+    $(&#39;.load&#39;).show();
+    $getQuote();
+  });
+});
+
+// Get the quote
+var get Quote = function(){
+.
+.
+.
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;That concludes part II of this tutorial. jQuery can make manipulating the DOM a lot easier than regular JavaScript. As always, feel free to comment and let me know what you think and ask any questions you might have.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Random Quote Part I</title>
+      <link>/post/random-quote-part-I/</link>
+      <pubDate>Tue, 20 Oct 2015 13:00:19 -0600</pubDate>
+      
+      <guid>/post/random-quote-part-I/</guid>
+      <description>&lt;p&gt;I decided to revisit a project I completed a while ago that displays a random quote from &lt;a href=&#34;http://forismatic.com/en/&#34;&gt;Forismatic&lt;/a&gt;. This project is also part of the &lt;a href=&#34;http://freecodecamp.com/&#34;&gt;Free Code Camp&lt;/a&gt; curriculum that I have been completing in my spare time. I originally used &lt;a href=&#34;http://getbootstrap.com/&#34;&gt;Bootstrap&lt;/a&gt; to help with the layout of the page. I figured I would rewrite it without the help of a CSS framework to lean against, using flexbox. I have made a &lt;a href=&#34;http://codepen.io/krjordan/full/oXRQXG/&#34;&gt;codepen&lt;/a&gt; for anyone who wants to look at the finished product.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;the-html&#34;&gt;The HTML&lt;/h3&gt;
+
+&lt;p&gt;So the HTML is easy and doesn&amp;rsquo;t need much explanation. I am making use of the &lt;code class=&#34;language-html&#34;&gt;&amp;lt;blockquote&amp;gt;&lt;/code&gt; and &lt;code class=&#34;language-html&#34;&gt;&amp;lt;cite&amp;gt;&lt;/code&gt; tags to hold the quote and author. Here is the HTML:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;&amp;lt;body&amp;gt;
+  &amp;lt;div class=&amp;quot;container&amp;quot;&amp;gt;
+    &amp;lt;h2&amp;gt;Random Quote Generator&amp;lt;/h2&amp;gt;
+    &amp;lt;a href=&amp;quot;#&amp;quot; id=&amp;quot;btn-quote&amp;quot;&amp;gt;Generate New Quote&amp;lt;/a&amp;gt;
+    &amp;lt;blockquote&amp;gt;
+      &amp;lt;p id=&amp;quot;quoteText&amp;quot;&amp;gt;&amp;lt;/p&amp;gt;
+      &amp;lt;cite&amp;gt;&amp;amp;mdash; &amp;lt;span id=&amp;quot;quoteAuthor&amp;quot;&amp;gt;&amp;lt;/span&amp;gt;
+        &amp;lt;span id=&amp;quot;btn-tweet&amp;quot;&amp;gt;
+          &amp;lt;i class=&amp;quot;fa fa-twitter&amp;quot;&amp;gt;&amp;lt;/i&amp;gt;
+        &amp;lt;/span&amp;gt;
+      &amp;lt;/cite&amp;gt;
+    &amp;lt;/blockquote&amp;gt;
+    &amp;lt;div class=&amp;quot;load&amp;quot;&amp;gt;&amp;lt;i class=&amp;quot;fa fa-spinner fa-spin&amp;quot;&amp;gt;&amp;lt;/i&amp;gt;&amp;lt;/div&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;footer&amp;gt;Powered by&amp;amp;nbsp;&amp;lt;a href=&amp;quot;http://forismatic.com/en/&amp;quot;&amp;gt;Forismatic&amp;lt;/a&amp;gt;&amp;lt;/footer&amp;gt;
+&amp;lt;/body&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It should also be noted that I&amp;rsquo;m using &lt;a href=&#34;http://necolas.github.io/normalize.css/&#34;&gt;Normalize.css&lt;/a&gt;, &lt;a href=&#34;https://fortawesome.github.io/Font-Awesome/&#34;&gt;Font Awesome Icons&lt;/a&gt;,  &lt;a href=&#34;https://jquery.com/&#34;&gt;jQuery&lt;/a&gt; and &lt;a href=&#34;https://www.google.com/fonts&#34;&gt;Google Fonts&lt;/a&gt;. Hence, the &lt;code class=&#34;language-html&#34;&gt;class=&amp;ldquo;fa fa-twitter&amp;rdquo;&lt;/code&gt; and &lt;code class=&#34;language-none&#34;&gt;fa fa-spinner fa-spin&lt;/code&gt;. Also, to make the loading icon spin, we add the &lt;code class=&#34;language-none&#34;&gt;fa-spin&lt;/code&gt; class.&lt;/p&gt;
+
+&lt;p&gt;With our HTML out of the way we can get into the good stuff! Our page looks pretty boring right now.
+&lt;img src=&#34;/img/Random_Quote_Generator.png&#34; alt=&#34;Basic HTML with no CSS or JavaScript&#34; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;adding-the-css&#34;&gt;Adding the CSS&lt;/h3&gt;
+
+&lt;p&gt;So lets dig into the CSS and give the &lt;code class=&#34;language-html&#34;&gt;&amp;lt;body&amp;gt;&lt;/code&gt; some flexbox:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-css&#34;&gt;body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: &#39;Open Sans&#39;, sans-serif;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This will center everything in our &lt;code class=&#34;language-html&#34;&gt;&amp;lt;body&amp;gt;&lt;/code&gt; and also set our font as Open Sans.
+&lt;img src=&#34;/img/Random_Quote_Generator-1.png&#34; alt=&#34;Centered body&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now that the &lt;code class=&#34;language-html&#34;&gt;&amp;lt;body&amp;gt;&lt;/code&gt; is centered we will need to do the same to the &lt;code class=&#34;language-none&#34;&gt;container&lt;/code&gt; so all of the elements inside the &lt;code class=&#34;language-none&#34;&gt;container&lt;/code&gt; will be centered as well. We also need to make sure that &lt;code class=&#34;language-css&#34;&gt;flex-direction: column;&lt;/code&gt; is set since &lt;code class=&#34;language-css&#34;&gt;flex-direction: row;&lt;/code&gt; is the default and we want our content in a column.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-css&#34;&gt;.container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/Random_Quote_Generator-2.png&#34; alt=&#34;Center Content inside the container&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m also going to add some Lorem ipsum in for the &lt;code class=&#34;language-html&#34;&gt;&amp;lt;blockquote&amp;gt;&lt;/code&gt; and &lt;code class=&#34;language-html&#34;&gt;&amp;lt;cite&amp;gt;&lt;/code&gt; tags to help us with styling. Now that we have everything centered, lets make it a bit more easy on the eyes.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-css&#34;&gt;h2 {
+  padding: 3.125em 0;
+  font-weight: 700;
+  font-style: italic;
+}
+p {
+  max-width: 700px;
+}
+#btn-quote {
+  padding: 0.625em;
+  margin: 3.125em 0;
+  background-color: #337ab7;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+}
+#btn-quote:hover {
+  background-color: #2e6da4;
+}
+/* Stolen from CSS-Tricks.com */
+blockquote {
+  background-color: #f9f9f9;
+  border-left: 10px solid #ccc;
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
+  quotes: &#39;\201C&#39;&#39;\201D&#39;&#39;\2018&#39;&#39;\2019&#39;;
+}
+blockquote:before {
+  color: #ccc;
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+}
+blockquote p,
+blockquote span {
+  padding: 0.938em 0;
+}
+#btn-tweet {
+  padding-left: 1.563em;
+  cursor: pointer;
+  color: #4099ff;
+}
+#btn-tweet:hover {
+  color: #0065d9;
+}
+.load {
+  padding: 6.250em 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/Random_Quote_Generator-3.png&#34; alt=&#34;After styling&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Looking good, but when the quote is bigger or smaller, the footer moves accordingly. That&amp;rsquo;s not what we want. So lets make the footer stick to the bottom of the page.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-css&#34;&gt;body {
+  ...
+  height: 100vh;
+}
+.container {
+ ...
+ flex: 1;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/Random_Quote_Generator-4.png&#34; alt=&#34;Adding height and flex&#34; /&gt;
+I snagged the &lt;code class=&#34;language-html&#34;&gt;&amp;lt;blockquote&amp;gt;&lt;/code&gt; styling from &lt;a href=&#34;https://css-tricks.com/snippets/css/simple-and-nice-blockquote-styling/&#34;&gt;CSS-Tricks&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Now our footer stays at the bottom of the page even if the quote is one sentence long. The &lt;code class=&#34;language-css&#34;&gt;height: 100vh;&lt;/code&gt; basically tells the browser to set the height to 100% of whatever height the viewport is. The &lt;code class=&#34;language-css&#34;&gt;flex: 1&lt;/code&gt; tells the browser how much space the element should take up. Setting &lt;code class=&#34;language-css&#34;&gt;flex&lt;/code&gt; to &lt;code class=&#34;language-css&#34;&gt;1&lt;/code&gt; will tell the browser to make this element larger than its siblings since the default value is zero.&lt;/p&gt;
+
+&lt;p&gt;Lets style the &lt;code class=&#34;language-html&#34;&gt;&amp;lt;footer&amp;gt;&lt;/code&gt; and make the loading icon hidden for the time being.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-css&#34;&gt;footer {
+  padding: 0.938em;
+}
+footer a {
+  text-decoration: none;
+  color: #337ab7;
+}
+footer a:hover {
+  color: #0065d9;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;$(document).ready(function (){
+  // Hide the loading icon
+  $(&#39;.load&#39;).hide();
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/Random_Quote_Generator-5.png&#34; alt=&#34;Finished product&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This concludes the styling portion of this tutorial. I plan on writing up a &lt;code class=&#34;language-none&#34;&gt;Part 2&lt;/code&gt; that will walk through the jQuery code. If you have any questions or comments feel free to leave them below. If you want to view the finished page, you can find it &lt;a href=&#34;http://codepen.io/krjordan/full/oXRQXG/&#34;&gt;here&lt;/a&gt; and I have also added a &lt;a href=&#34;https://github.com/krjordan/random-quote-generator&#34;&gt;Github repo&lt;/a&gt; for those who would rather download the source code to play around with. The final code up to this point is below.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;&amp;lt;body&amp;gt;
+  &amp;lt;div class=&amp;quot;container&amp;quot;&amp;gt;
+    &amp;lt;h2&amp;gt;Random Quote Generator&amp;lt;/h2&amp;gt;
+    &amp;lt;a href=&amp;quot;#&amp;quot; id=&amp;quot;btn-quote&amp;quot;&amp;gt;Generate New Quote&amp;lt;/a&amp;gt;
+    &amp;lt;blockquote&amp;gt;
+      &amp;lt;p id=&amp;quot;quoteText&amp;quot;&amp;gt;Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eius harum, aspernatur quas earum aut tempora necessitatibus voluptatibus nam veritatis odit neque ut animi! Veniam nam pariatur unde dicta consectetur a quos, quae corporis dolorem, ratione ex aliquam, ipsa facilis nostrum.&amp;lt;/p&amp;gt;
+      &amp;lt;cite&amp;gt;&amp;amp;mdash; &amp;lt;span id=&amp;quot;quoteAuthor&amp;quot;&amp;gt;Lorem impsum.&amp;lt;/span&amp;gt;
+        &amp;lt;span id=&amp;quot;btn-tweet&amp;quot;&amp;gt;
+          &amp;lt;i class=&amp;quot;fa fa-twitter&amp;quot;&amp;gt;&amp;lt;/i&amp;gt;
+        &amp;lt;/span&amp;gt;
+      &amp;lt;/cite&amp;gt;
+    &amp;lt;/blockquote&amp;gt;
+    &amp;lt;div class=&amp;quot;load&amp;quot;&amp;gt;&amp;lt;i class=&amp;quot;fa fa-spinner fa-spin&amp;quot;&amp;gt;&amp;lt;/i&amp;gt;&amp;lt;/div&amp;gt;
+  &amp;lt;/div&amp;gt;
+  &amp;lt;footer&amp;gt;Powered by&amp;amp;nbsp;&amp;lt;a href=&amp;quot;http://forismatic.com/en/&amp;quot;&amp;gt;Forismatic&amp;lt;/a&amp;gt;&amp;lt;/footer&amp;gt;
+&amp;lt;/body&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-css&#34;&gt;body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  font-family: &#39;Open Sans&#39;, sans-serif;
+}
+.container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  flex: 1;
+}
+h2 {
+  padding: 3.125em 0;
+  font-weight: 700;
+  font-style: italic;
+}
+p {
+  max-width: 43.750em;
+}
+#btn-quote {
+  padding: 0.625em;
+  margin: 3.125em 0;
+  background-color: #337ab7;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+}
+#btn-quote:hover {
+  background-color: #2e6da4;
+}
+blockquote {
+  background-color: #f9f9f9;
+  border-left: 10px solid #ccc;
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
+  quotes: &#39;\201C&#39;&#39;\201D&#39;&#39;\2018&#39;&#39;\2019&#39;;
+}
+blockquote:before {
+  color: #ccc;
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em
+}
+blockquote p,
+blockquote span {
+  padding: 0.938em 0;
+}
+#btn-tweet {
+  padding-left: 1.563em;
+  cursor: pointer;
+  color: #4099ff;
+}
+#btn-tweet:hover {
+  color: #0065d9;
+}
+.load {
+  padding: 6.250em 0;
+}
+footer {
+  padding: 0.938em;
+}
+footer a {
+  text-decoration: none;
+  color: #337ab7;
+}
+footer a:hover {
+  color: #0065d9;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;$(document).ready(function (){
+  // Hide the loading icon
+  $(&#39;.load&#39;).hide();
+});
+&lt;/code&gt;&lt;/pre&gt;</description>
+    </item>
+    
+    <item>
+      <title>Navigation Header with Flexbox</title>
+      <link>/post/navigation-header-with-flexbox/</link>
+      <pubDate>Fri, 02 Oct 2015 13:02:45 -0600</pubDate>
+      
+      <guid>/post/navigation-header-with-flexbox/</guid>
+      <description>&lt;p&gt;I decided to continue with the small flexbox tutorials. So here is another one. In this tutorial, we will make a navigation header using flexbox. If you haven&amp;rsquo;t read my first post on flexbox, you should check it out &lt;a href=&#34;http://mycodingblog.com/discovering-flexbox/&#34;&gt;here&lt;/a&gt;. I have made a &lt;a href=&#34;http://codepen.io/krjordan/pen/PPppOd/&#34;&gt;codepen&lt;/a&gt; of what we will be building. Let&amp;rsquo;s get started with the HTML.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;&amp;lt;body&amp;gt;
+  &amp;lt;div id=&amp;quot;header&amp;quot;&amp;gt;
+    &amp;lt;a href=&amp;quot;#&amp;quot;&amp;gt;
+      &amp;lt;i class=&amp;quot;fa fa-tree&amp;quot;&amp;gt;&amp;lt;/i&amp;gt;
+    &amp;lt;/a&amp;gt;
+    &amp;lt;nav role=&#39;navigation&#39;&amp;gt;
+      &amp;lt;ul&amp;gt;
+        &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;#&amp;quot;&amp;gt;Home&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
+        &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;#&amp;quot;&amp;gt;About&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
+        &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;#&amp;quot;&amp;gt;Clients&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
+        &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;#&amp;quot;&amp;gt;Contact Us&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
+      &amp;lt;/ul&amp;gt;
+    &amp;lt;/nav&amp;gt;
+    &amp;lt;a href=&amp;quot;#&amp;quot;&amp;gt;Learn More
+      &amp;lt;i class=&amp;quot;fa fa-bars&amp;quot;&amp;gt;&amp;lt;/i&amp;gt;
+    &amp;lt;/a&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/body&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Nothing new here, it is a very simple navbar using some icons from &lt;a href=&#34;https://fortawesome.github.io/Font-Awesome/get-started/&#34;&gt;Font Awesome&lt;/a&gt;. I&amp;rsquo;ll style it up a bit so we can get to the point. I&amp;rsquo;m using &lt;a href=&#34;http://sass-lang.com/&#34;&gt;SASS&lt;/a&gt;, so if you are still using regular CSS you should switch! If you are just starting out, check out the &lt;a href=&#34;http://codepen.io/krjordan/pen/PPppOd/&#34;&gt;codepen&lt;/a&gt; and click the &lt;code class=&#34;language-none&#34;&gt;view compiled&lt;/code&gt; button to view the regular CSS. This will also show you all of the prefixers too (&lt;code class=&#34;language-css&#34;&gt;-webkit-&lt;/code&gt;, &lt;code class=&#34;language-css&#34;&gt;-moz&lt;/code&gt;, etc.).&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-css&#34;&gt;#header {
+  height: 2.5em;
+  color: #333;
+  a {
+    text-decoration: none;
+    color: #333;
+    &amp;amp;:hover{
+      color: lighten(#333, 30%);
+    }
+  }
+  i {
+    padding: 0 0.625em;
+    font-size: 1.250em;
+    &amp;amp;:hover {
+      color: lighten(#333, 30%);
+    }
+  }
+  nav {
+    ul {
+      li {
+        list-style-type: none;
+        padding: 0.625em 1.250em;
+        border-right: 1px solid #e5e5e5;
+        &amp;amp;:last-of-type {
+          border: none;
+        }
+      }
+    }
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So this will give us:
+&lt;img src=&#34;/img/Flexbox_Navigation_Snippet-4.png&#34; alt=&#34;Screenshot Without Flexbox&#34; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;adding-flexbox&#34;&gt;Adding Flexbox&lt;/h3&gt;
+
+&lt;p&gt;So lets add some flexbox. We&amp;rsquo;ll start off by adding &lt;code class=&#34;language-css&#34;&gt;display: flex;&lt;/code&gt;, &lt;code class=&#34;language-css&#34;&gt;align-items: center;&lt;/code&gt; and &lt;code class=&#34;language-css&#34;&gt;justify-content: center;&lt;/code&gt; to the &lt;code class=&#34;language-css&#34;&gt;div#header&lt;/code&gt;, like so:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-css&#34;&gt;#header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/Flexbox_Navigation_Snippet-1.png&#34; alt=&#34;Screenshot Adding Flexbox&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This centers the content inside the header. &lt;strong&gt;Note:&lt;/strong&gt; the &lt;code class=&#34;language-html&#34;&gt;&amp;lt;ul&amp;gt;&lt;/code&gt; is pushing the tree icon to the left. No need to concern ourselves with that. Now lets style the &lt;code class=&#34;language-html&#34;&gt;&amp;lt;ul&amp;gt;&lt;/code&gt; to &lt;code class=&#34;language-css&#34;&gt;display: flex;&lt;/code&gt;, &lt;code class=&#34;language-css&#34;&gt;align-items: center;&lt;/code&gt; and &lt;code class=&#34;language-css&#34;&gt;justify-content&lt;/code&gt;. For the sake of this tutorial, and because I hate incomplete tutorials that skip over certain sections and assume the reader knows what they don&amp;rsquo;t know&amp;hellip;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-css&#34;&gt;...
+nav {
+  ul {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    li {
+      ...
+    }
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/Flexbox_Navigation_Snippet-2.png&#34; alt=&#34;Screenshot of more flexbox additions&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Alright, so we are almost there! We now have our navbar and unordered list centered. Now we just need to figure out a way to push the tree icon to the left and the &amp;ldquo;Learn More&amp;rdquo; and menu icon to the right. We could do something crazy like mess with the width of the &lt;code class=&#34;language-html&#34;&gt;&amp;lt;nav&amp;gt;&lt;/code&gt; or use padding or margin. I dare say we could even use &lt;code class=&#34;language-css&#34;&gt;position: absolute;&lt;/code&gt;, but &lt;strong&gt;NO!!&lt;/strong&gt; There is a better solution. Let&amp;rsquo;s look at &lt;code class=&#34;language-css&#34;&gt;flex-grow: 1;&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&#34;language-css&#34;&gt;flex-grow&lt;/code&gt; is defined by &lt;a href=&#34;https://css-tricks.com/snippets/css/a-guide-to-flexbox/&#34;&gt;CSS-Tricks&lt;/a&gt; as&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;The ability for a flex item to grow if necessary. It accepts a unitless value that serves as a proportion. It dictates what amount of the available space inside the flex container item should take up.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I personally use the &lt;code class=&#34;language-css&#34;&gt;flex&lt;/code&gt; shorthand property since it only requires one parameter, &lt;code class=&#34;language-css&#34;&gt;flex-grow&lt;/code&gt;. It will accomplish the same goal. So we will add &lt;code class=&#34;language-css&#34;&gt;flex: 1;&lt;/code&gt; to our &lt;code class=&#34;language-html&#34;&gt;&amp;lt;nav&amp;gt;&lt;/code&gt; element. Like so:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-css&#34;&gt;...
+
+nav {
+  flex: 1;
+  ul {
+    display: flex;
+    align-items: center;
+    ...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Our header will now be complete.
+&lt;img src=&#34;/img/Flexbox_Navigation_Snippet-5.png&#34; alt=&#34;Screenshot of Finished navbar&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;So without using excessive padding, margin, absolute positioning or a framework we have built a simple navigation header. It isn&amp;rsquo;t mobile friendly, but works well on medium and up views. We would need to do a bit more to make it responsive.&lt;/p&gt;
+
+&lt;p&gt;That&amp;rsquo;s all for now. The complete SASS file is written below or, once again, you can check out the &lt;a href=&#34;http://codepen.io/krjordan/pen/PPppOd&#34;&gt;codepen&lt;/a&gt; for the demo and code. &lt;del&gt;When time permits, hopefully soon, I will add a comment functionality to the blog&lt;/del&gt;. If you have any questions or anything to add, be sure to leave a comment below. You can also reach me on Twitter at &lt;a href=&#34;https://twitter.com/RyanJ1500&#34;&gt;@RyanJ1500&lt;/a&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-css&#34;&gt;#header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.5em;
+  color: #333;
+  a {
+    text-decoration: none;
+    color: #333;
+    &amp;amp;:hover {
+      color: lighten(#333, 30%);
+    }
+  }
+  i {
+    padding: 0 0.625em;
+    font-size: 1.250em;
+    &amp;amp;:hover {
+      color: lighten(#333, 30%);
+    }
+  }
+  nav {
+    flex: 1;
+    ul {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      li {
+        list-style-type: none;
+        padding: 0.625em 1.250em;
+        border-right: 1px solid #e5e5e5;
+        &amp;amp;:last-of-type {
+          border: none;
+        }
+      }
+    }
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;</description>
+    </item>
+    
+    <item>
+      <title>Discovering Flexbox</title>
+      <link>/post/discovering-flexbox/</link>
+      <pubDate>Tue, 15 Sep 2015 15:06:14 -0600</pubDate>
+      
+      <guid>/post/discovering-flexbox/</guid>
+      <description>&lt;p&gt;So, now that I work with a team of web developers, I am constantly learning new things. One of the many new things I&amp;rsquo;ve learned about, is flexbox. I have to admit, I found it very intimidating at first. I figured I&amp;rsquo;d make a small tutorial about flexbox using a very simple navigation menu.&lt;/p&gt;
+
+&lt;p&gt;Flexbox makes things easier, especially when it comes to centering items. One of the main reasons I use &lt;a href=&#34;http://getbootstrap.com&#34;&gt;Bootstrap&lt;/a&gt; in the majority of my projects is due to it being a pain to layout items and get them centered. Using frameworks like &lt;a href=&#34;http://getbootstrap.com&#34;&gt;Bootstrap&lt;/a&gt; and &lt;a href=&#34;http://foundation.zurb.com&#34;&gt;Foundation&lt;/a&gt; help you get up and running quickly. However, most developers (I&amp;rsquo;ve been guilty of this) don&amp;rsquo;t go back and remove the unused CSS or use a CDN where most users will have the file cached, but for those who don&amp;rsquo;t, well it could take a bit more time to load.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;p&gt;With a few lines of CSS, we can get a very simple navigation menu centered and listed horizontally. For this example, I&amp;rsquo;ll just use an unordered list.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;&amp;lt;body&amp;gt;
+  &amp;lt;ul&amp;gt;
+    &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;#&amp;quot;&amp;gt;Home&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
+    &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;#&amp;quot;&amp;gt;About&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
+    &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;#&amp;quot;&amp;gt;Blog&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
+    &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;#&amp;quot;&amp;gt;Contact&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
+  &amp;lt;/ul&amp;gt;
+&amp;lt;/body&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/Discovering_Flexbox_1.png&#34; alt=&#34;HTML output&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We&amp;rsquo;ll add a bit of styling to make our page look a bit more presentable.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-css&#34;&gt;li {
+  list-style: none;
+  padding: 15px;
+}
+
+li:hover {
+  color: red;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/Screen-Shot-2015-09-15-at-6-08-30-PM.png&#34; alt=&#34;HTML output&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Alright, now it&amp;rsquo;s starting to look like a navigation menu. Now we just need to add &lt;code class=&#34;language-css&#34;&gt;display: flex;&lt;/code&gt; to the container of the items we want to center. In this case, it&amp;rsquo;s the &lt;code class=&#34;language-html&#34;&gt;&amp;lt;ul&amp;gt;&lt;/code&gt; .&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/Discovering_Flexbox_and_main_css_-_svg.png&#34; alt=&#34;HTML output&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The default value for &lt;code class=&#34;language-css&#34;&gt;flex-direction: row;&lt;/code&gt; ,which just so happens to be what we need. Now we need to add &lt;code class=&#34;language-css&#34;&gt;justify-content: center;&lt;/code&gt; and we&amp;rsquo;re done.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/Discovering_Flexbox_and_main_css_-_svg-1.png&#34; alt=&#34;HTML output&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The complete CSS file looks like:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-css&#34;&gt;ul {
+  display: flex;
+  justify-content: center;
+}
+
+li {
+  list-style: none;
+  padding: 15px;
+}
+
+li:hover {
+  color: red;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Check out the &lt;a href=&#34;http://codepen.io/krjordan/pen/pjgqZZ/?editors=110&#34;&gt;codepen&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Flexbox offers a lot more than just giving us the ability to quickly center elements. I plan on writing a few more posts on the topic, but you should check out two great resources I&amp;rsquo;ve found. CSS-Tricks has a great post on it called &lt;a href=&#34;https://css-tricks.com/snippets/css/a-guide-to-flexbox/&#34;&gt;A Complete Guide to Flexbox&lt;/a&gt; that I refer to quite frequently and Wes Bos has some awesome free &lt;a href=&#34;http://flexbox.io/&#34;&gt;video tutorials&lt;/a&gt; to help get you started.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>My First Post with Ghost</title>
+      <link>/post/my-first-post-with-ghost/</link>
+      <pubDate>Sat, 05 Sep 2015 15:01:52 -0600</pubDate>
+      
+      <guid>/post/my-first-post-with-ghost/</guid>
+      <description>&lt;p&gt;So I&amp;rsquo;ve decided to start a blog and write about my journey of starting a new career. I just landed a job as a Junior Web Developer and I really wish I would have done this sooner! My goal for this blog is to gain a better understanding of the topics that I post about and hopefully help other new developers find their way through the maze of learning to code.&lt;/p&gt;
+
+&lt;p&gt;I have chosen to use &lt;a href=&#34;https://ghost.org/&#34;&gt;ghost&lt;/a&gt; as my means to accomplish this. I wanted to play around with it before I decided to put it up on a server, so I started off with &lt;a href=&#34;https://github.com/dbough/vagrant-ghost&#34;&gt;this repo&lt;/a&gt; on Github and typed &lt;code&gt;vagrant up&lt;/code&gt; in my terminal. Assuming you have &lt;a href=&#34;https://vagrantup.com&#34;&gt;vangrant&lt;/a&gt;, if not, check them out. It was actually quite simple once I figured out the best way to go about installing it. I&amp;rsquo;m also looking forward to tweaking the default theme and maybe writing out a small tutorial on how I accomplished this.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;p&gt;My goal is to make a new post at least once a week and hopefully have a way for interested users to subscribe to it. That is, if you find what I have to say useful. &lt;del&gt;I will also be looking for a way to add a comment section to each post&lt;/del&gt;, as I would like the feedback and collaboration that hopefully comes along with this endeavor.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Up &amp; Running with Ghost and Digital Ocean</title>
+      <link>/post/up-and-running-with-ghost-and-digital-ocean/</link>
+      <pubDate>Sat, 05 Sep 2015 12:06:37 -0600</pubDate>
+      
+      <guid>/post/up-and-running-with-ghost-and-digital-ocean/</guid>
+      <description>&lt;p&gt;I know there are numerous tutorials on how to setup Ghost with Digital Ocean, but I figured I&amp;rsquo;d throw mine into the hat. This will be a quick and to the point tutorial of how to get your start a Ghost blog with Digital Ocean.&lt;/p&gt;
+
+&lt;p&gt;First, a quick introduction to &lt;a href=&#34;https://ghost.org&#34;&gt;Ghost&lt;/a&gt; and &lt;a href=&#34;https://www.digitalocean.com/&#34;&gt;Digital Ocean&lt;/a&gt;. Ghost is an open source blogging platform that is easy to get up and running. It functions like a CMS and your posts are written in Markdown. Digital Ocean is a cloud hosting provider. They offer good prices and have a good deal of tutorials to help you get up and running. I&amp;rsquo;ll be honest, it took me a few days of research and playing around to get one of my sites up and running as I had only used GoDaddy before. So knowing your way around the terminal helps, but isn&amp;rsquo;t required for this tutorial.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;p&gt;And so it begins&amp;hellip;&lt;/p&gt;
+
+&lt;h2 id=&#34;creating-a-droplet&#34;&gt;Creating A Droplet&lt;/h2&gt;
+
+&lt;p&gt;You will need an account at Digital Ocean and then you will need to create a droplet. Fill in whatever you want to call your droplet for your Droplet Hostname and then select a size. I&amp;rsquo;m currently using the 512 MB for this blog.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/DigitalOcean_Control_Panel.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Select where you want your droplet hosted. I live in the U.S., so naturally, I chose one close to me.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/DigitalOcean_Control_Panel-2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now select the Ghost image.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;/img/DigitalOcean_Control_Panel_and_root_personal-blog____-_ssh_-_88-42.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Next you will need to choose any additional settings like backups and private networking. I&amp;rsquo;m didn&amp;rsquo;t select any. Backups might not be a bad idea, though&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;Optionally, you can add you ssh key to use when logging into the droplet instead of a password. If you would like to use an ssh key and you have one on your Mac simply open your terminal and type &lt;code class=&#34;language-none&#34;&gt;pbcopy &amp;lt; ~/.ssh/id_rsa.pub&lt;/code&gt; to copy it to your clipboard. Then add it by using &lt;code class=&#34;language-none&#34;&gt;cmd v&lt;/code&gt; or right click &lt;code class=&#34;language-none&#34;&gt;paste&lt;/code&gt;. If you do not have an ssh key, a good tutorial can be found on Github &lt;a href=&#34;https://help.github.com/articles/generating-ssh-keys/&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Now you are ready to create your droplet. This will take a minute or so, then you will receive an email containing all of the important information about your new droplet.&lt;/p&gt;
+
+&lt;h2 id=&#34;configure-your-nameservers&#34;&gt;Configure Your Nameservers&lt;/h2&gt;
+
+&lt;p&gt;If you haven&amp;rsquo;t done so already, you will need to point your nameservers from your domain registrar to Digital Ocean. For more info, check out &lt;a href=&#34;https://www.digitalocean.com/community/tutorials/how-to-set-up-a-host-name-with-digitalocean&#34;&gt;Digital Ocean&amp;rsquo;s instructions&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;your-new-blog&#34;&gt;Your New Blog&lt;/h2&gt;
+
+&lt;p&gt;Now you can navigate to the IP address given to you from Digital Ocean and you should see your new blog. To log in, type &lt;code class=&#34;language-none&#34;&gt;123.45.678.90/ghost&lt;/code&gt; in the address bar, replacing the example IP with your IP. This should take you to a signup form where you will need to fill out your information. This information is strictly for this droplet so that you can log in and edit/publish to your blog. Once that&amp;rsquo;s complete, you should be logged in.&lt;/p&gt;
+
+&lt;h2 id=&#34;set-up-a-domain-name&#34;&gt;Set up a Domain Name&lt;/h2&gt;
+
+&lt;p&gt;To log into my droplets, I use my terminal. You can also use the console on Digital Ocean, but I find my terminal more cooperative and only use the console they provide when/if something happens. Like banning my IP address when testing out flightplan.js while using fail2ban. That was a frustrating experience.&lt;/p&gt;
+
+&lt;p&gt;At any rate, open your terminal and and log in to your droplet. To do this type &lt;code class=&#34;language-none&#34;&gt;ssh root@123.45.678.90&lt;/code&gt; again, using your IP address instead of the one here. If you chose to use an ssh key, you will automatically be logged in. If not, you will be prompted for a password. This password will be the same one you received from Digital Ocean in your email.&lt;/p&gt;
+
+&lt;p&gt;If you&amp;rsquo;re not that familiar with the terminal, when you type or paste your password into the terminal, it will not provide any feedback for security purposes. Just press enter. Once in, it will ask you again for the password. Then it will ask for a new password that you will need to input twice.&lt;/p&gt;
+
+&lt;p&gt;Now, you will need to open the nginx configuration file and edit the server_name. Type &lt;code class=&#34;language-none&#34;&gt;vi /etc/nginx/sites-available/ghost&lt;/code&gt; . Below is what the file should look like. You will need to change the &lt;code class=&#34;language-none&#34;&gt;my-ghost-blog.com&lt;/code&gt; value to your domain name.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-nginx&#34;&gt;server {
+    listen 80;
+    server_name my-ghost-blog.com ;
+
+    location / {
+        proxy_pass http://localhost:2368/;
+        proxy_set_header Host $host;
+        proxy_buffering off;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;After changing the value of &lt;code class=&#34;language-nginx&#34;&gt;server_name&lt;/code&gt; to your domain name, press the &lt;code class=&#34;language-none&#34;&gt;esc&lt;/code&gt; key and then type &lt;code class=&#34;language-none&#34;&gt;:wq&lt;/code&gt; to save and quit vi.&lt;/p&gt;
+
+&lt;p&gt;You will now need to edit the &lt;code class=&#34;language-none&#34;&gt;config.js&lt;/code&gt; file. Type &lt;code class=&#34;language-none&#34;&gt;vi /var/www/ghost/config.js&lt;/code&gt; to open the file. You should now see&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-nginx&#34;&gt;// # Ghost Configuration
+// Setup your Ghost install for various [environments](http://support.ghost.org/config#about-environments).
+
+// Ghost runs in &#39;development&#39; mode by default. Full documentation can be found at http://support.ghost.org/config/
+
+var path= require(&#39;path&#39;),
+    config;
+
+config = {
+    // ## Production
+    // When running Ghost in the wild, use the production environment.
+    // Configure your URL and mail settings here
+    production: {
+        url: &#39;http://my-ghost-blog.com&#39;,
+        mail: {},
+        database: {
+            client: &#39;sqlite3&#39;,
+            connection: {
+                filename: path.join(__dirnam, &#39;/content/data/ghost.db&#39;)
+            },
+            debug: false
+        },
+
+        server: {
+            host: &#39;127.0.0.1&#39;,
+            port: &#39;2368&#39;
+        }
+    },
+
+    // ### Development **(default)**
+    development: {
+
+...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You will need to change the &lt;code class=&#34;language-javascript&#34;&gt;url: &amp;lsquo;&lt;a href=&#34;http://my-ghost-blog.com&#39;&#34;&gt;http://my-ghost-blog.com&#39;&lt;/a&gt;&lt;/code&gt; to &lt;code class=&#34;language-javascript&#34;&gt;url: &amp;lsquo;&lt;a href=&#34;http://YOUR-DOMAIN.com&#39;&#34;&gt;http://YOUR-DOMAIN.com&#39;&lt;/a&gt;&lt;/code&gt; in the &lt;code class=&#34;language-none&#34;&gt;production&lt;/code&gt; block. Again, after editing the file press the &lt;code class=&#34;language-none&#34;&gt;esc&lt;/code&gt; key and the type &lt;code class=&#34;language-none&#34;&gt;:wq&lt;/code&gt; to save and quit the text editor.&lt;/p&gt;
+
+&lt;p&gt;Finally, you will need to restart Ghost with &lt;code class=&#34;language-nginx&#34;&gt;service ghost restart&lt;/code&gt; for the changes to be applied. There are other options that you can configure in this file. Visit the &lt;a href=&#34;https://support.ghost.org/config/&#34;&gt;Ghost Documentation&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Now you are ready to publish your first blog post! This tutorial turned out longer than I had originally planned. However, hopefully it will help you quickly set up Ghost with Digital Ocean. If you run into any issues, there are numerous tutorials from Digital Ocean and in the support documentation at &lt;a href=&#34;https://support.ghost.org&#34;&gt;https://support.ghost.org&lt;/a&gt;. Feel free to leave a comment or any questions you may have below.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <title>
+    Random Quote Part I // My Coding Blog
+  </title>
+
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="Ryan Jordan">
+<meta name="generator" content="Hugo 0.19" />
+
+  <meta property="og:title" content="Random Quote Part I" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:url" content="/post/random-quote-part-I/" />
+
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/base-min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/pure-min.css">
+  
+  
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/grids-responsive-min.css">
+  
+  
+
+  <link rel="stylesheet" href="//css/redlounge.css">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href='//fonts.googleapis.com/css?family=Raleway:400,200,100,700,300,500,600,800' rel='stylesheet' type='text/css'>
+  <link href='//fonts.googleapis.com/css?family=Libre+Baskerville:400,700,400italic' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="My Coding Blog" />
+
+    
+  
+
+  
+  <link rel="stylesheet" href="/css/prism.css">
+  <script src="/js/prism.js"></script>
+
+  
+
+  
+
+  
+
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', "UA-67235996-1", 'auto');
+  ga('send', 'pageview');
+</script>
+
+</head>
+
+<body>
+	
+
+	<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4">
+  <div class="header">
+    
+
+	
+
+    <h1 class="brand-title">My Coding Blog</h1>
+    <h2 class="brand-tagline">This is where I post about what I&#39;ve learned in my career as a web developer. I also post tutorials and other random, but hopefully useful things, which can benefit beginners and experts alike.</h2>
+
+    <nav class="nav">
+      <ul class="nav-list">
+        <li class="nav-item"><span class="nav-item-separator">//</span><a href="/">Home</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/about">About Me</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="http://krjordan.co">Portfolio</a></li>
+        
+      </ul>
+    </nav>
+
+    
+    <div class="social-buttons">
+      
+        
+        <a href="http://codepen.io/krjordan/pens/public/" target="_blank"><i class='fa fa-codepen fa-2x'></i></a>
+        
+      
+        
+        <a href="https://github.com/krjordan" target="_blank"><i class='fa fa-github fa-2x'></i></a>
+        
+      
+        
+        <a href="https://twitter.com/RyanJ1500" target="_blank"><i class='fa fa-twitter fa-2x'></i></a>
+        
+      
+      
+    </div>
+    
+
+  </div>
+</div>
+
+	
+	
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+		<a name="top"></a>
+		
+
+		
+			
+		    <div id="toc" class="pure-u-1 pure-u-md-1-4">
+				<small class="toc-label">Contents</small>
+		   	 	<nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#the-html">The HTML</a></li>
+<li><a href="#adding-the-css">Adding the CSS</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+		    </div>
+		    
+	    
+  		<section class="post">
+            <h1 class="post-title">
+              <a href="/post/random-quote-part-I/">Random Quote Part I</a>
+            </h1>
+            <h3 class="post-subtitle">
+            	
+            </h3>
+            
+            	<span class="post-date">
+                	<span class="post-date-day"><sup>20</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Oct</span> <span class="post-date-year">2015</span>
+            	</span>
+            	
+            
+            	
+            		<span class="post-author-single">By <a class="post-author"  target="">Ryan Jordan</a></span>
+            		
+
+
+
+
+            	
+            
+
+			
+			
+
+			
+
+			
+
+            <p>I decided to revisit a project I completed a while ago that displays a random quote from <a href="http://forismatic.com/en/">Forismatic</a>. This project is also part of the <a href="http://freecodecamp.com/">Free Code Camp</a> curriculum that I have been completing in my spare time. I originally used <a href="http://getbootstrap.com/">Bootstrap</a> to help with the layout of the page. I figured I would rewrite it without the help of a CSS framework to lean against, using flexbox. I have made a <a href="http://codepen.io/krjordan/full/oXRQXG/">codepen</a> for anyone who wants to look at the finished product.</p>
+
+<p></p>
+
+<h3 id="the-html">The HTML</h3>
+
+<p>So the HTML is easy and doesn&rsquo;t need much explanation. I am making use of the <code class="language-html">&lt;blockquote&gt;</code> and <code class="language-html">&lt;cite&gt;</code> tags to hold the quote and author. Here is the HTML:</p>
+
+<pre><code class="language-html">&lt;body&gt;
+  &lt;div class=&quot;container&quot;&gt;
+    &lt;h2&gt;Random Quote Generator&lt;/h2&gt;
+    &lt;a href=&quot;#&quot; id=&quot;btn-quote&quot;&gt;Generate New Quote&lt;/a&gt;
+    &lt;blockquote&gt;
+      &lt;p id=&quot;quoteText&quot;&gt;&lt;/p&gt;
+      &lt;cite&gt;&amp;mdash; &lt;span id=&quot;quoteAuthor&quot;&gt;&lt;/span&gt;
+        &lt;span id=&quot;btn-tweet&quot;&gt;
+          &lt;i class=&quot;fa fa-twitter&quot;&gt;&lt;/i&gt;
+        &lt;/span&gt;
+      &lt;/cite&gt;
+    &lt;/blockquote&gt;
+    &lt;div class=&quot;load&quot;&gt;&lt;i class=&quot;fa fa-spinner fa-spin&quot;&gt;&lt;/i&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;footer&gt;Powered by&amp;nbsp;&lt;a href=&quot;http://forismatic.com/en/&quot;&gt;Forismatic&lt;/a&gt;&lt;/footer&gt;
+&lt;/body&gt;
+</code></pre>
+
+<p>It should also be noted that I&rsquo;m using <a href="http://necolas.github.io/normalize.css/">Normalize.css</a>, <a href="https://fortawesome.github.io/Font-Awesome/">Font Awesome Icons</a>,  <a href="https://jquery.com/">jQuery</a> and <a href="https://www.google.com/fonts">Google Fonts</a>. Hence, the <code class="language-html">class=&ldquo;fa fa-twitter&rdquo;</code> and <code class="language-none">fa fa-spinner fa-spin</code>. Also, to make the loading icon spin, we add the <code class="language-none">fa-spin</code> class.</p>
+
+<p>With our HTML out of the way we can get into the good stuff! Our page looks pretty boring right now.
+<img src="/img/Random_Quote_Generator.png" alt="Basic HTML with no CSS or JavaScript" /></p>
+
+<h3 id="adding-the-css">Adding the CSS</h3>
+
+<p>So lets dig into the CSS and give the <code class="language-html">&lt;body&gt;</code> some flexbox:</p>
+
+<pre><code class="language-css">body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Open Sans', sans-serif;
+}
+</code></pre>
+
+<p>This will center everything in our <code class="language-html">&lt;body&gt;</code> and also set our font as Open Sans.
+<img src="/img/Random_Quote_Generator-1.png" alt="Centered body" /></p>
+
+<p>Now that the <code class="language-html">&lt;body&gt;</code> is centered we will need to do the same to the <code class="language-none">container</code> so all of the elements inside the <code class="language-none">container</code> will be centered as well. We also need to make sure that <code class="language-css">flex-direction: column;</code> is set since <code class="language-css">flex-direction: row;</code> is the default and we want our content in a column.</p>
+
+<pre><code class="language-css">.container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+</code></pre>
+
+<p><img src="/img/Random_Quote_Generator-2.png" alt="Center Content inside the container" /></p>
+
+<p>I&rsquo;m also going to add some Lorem ipsum in for the <code class="language-html">&lt;blockquote&gt;</code> and <code class="language-html">&lt;cite&gt;</code> tags to help us with styling. Now that we have everything centered, lets make it a bit more easy on the eyes.</p>
+
+<pre><code class="language-css">h2 {
+  padding: 3.125em 0;
+  font-weight: 700;
+  font-style: italic;
+}
+p {
+  max-width: 700px;
+}
+#btn-quote {
+  padding: 0.625em;
+  margin: 3.125em 0;
+  background-color: #337ab7;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+}
+#btn-quote:hover {
+  background-color: #2e6da4;
+}
+/* Stolen from CSS-Tricks.com */
+blockquote {
+  background-color: #f9f9f9;
+  border-left: 10px solid #ccc;
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
+  quotes: '\201C''\201D''\2018''\2019';
+}
+blockquote:before {
+  color: #ccc;
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+}
+blockquote p,
+blockquote span {
+  padding: 0.938em 0;
+}
+#btn-tweet {
+  padding-left: 1.563em;
+  cursor: pointer;
+  color: #4099ff;
+}
+#btn-tweet:hover {
+  color: #0065d9;
+}
+.load {
+  padding: 6.250em 0;
+}
+</code></pre>
+
+<p><img src="/img/Random_Quote_Generator-3.png" alt="After styling" /></p>
+
+<p>Looking good, but when the quote is bigger or smaller, the footer moves accordingly. That&rsquo;s not what we want. So lets make the footer stick to the bottom of the page.</p>
+
+<pre><code class="language-css">body {
+  ...
+  height: 100vh;
+}
+.container {
+ ...
+ flex: 1;
+}
+</code></pre>
+
+<p><img src="/img/Random_Quote_Generator-4.png" alt="Adding height and flex" />
+I snagged the <code class="language-html">&lt;blockquote&gt;</code> styling from <a href="https://css-tricks.com/snippets/css/simple-and-nice-blockquote-styling/">CSS-Tricks</a></p>
+
+<p>Now our footer stays at the bottom of the page even if the quote is one sentence long. The <code class="language-css">height: 100vh;</code> basically tells the browser to set the height to 100% of whatever height the viewport is. The <code class="language-css">flex: 1</code> tells the browser how much space the element should take up. Setting <code class="language-css">flex</code> to <code class="language-css">1</code> will tell the browser to make this element larger than its siblings since the default value is zero.</p>
+
+<p>Lets style the <code class="language-html">&lt;footer&gt;</code> and make the loading icon hidden for the time being.</p>
+
+<pre><code class="language-css">footer {
+  padding: 0.938em;
+}
+footer a {
+  text-decoration: none;
+  color: #337ab7;
+}
+footer a:hover {
+  color: #0065d9;
+}
+</code></pre>
+
+<pre><code class="language-javascript">$(document).ready(function (){
+  // Hide the loading icon
+  $('.load').hide();
+});
+</code></pre>
+
+<p><img src="/img/Random_Quote_Generator-5.png" alt="Finished product" /></p>
+
+<p>This concludes the styling portion of this tutorial. I plan on writing up a <code class="language-none">Part 2</code> that will walk through the jQuery code. If you have any questions or comments feel free to leave them below. If you want to view the finished page, you can find it <a href="http://codepen.io/krjordan/full/oXRQXG/">here</a> and I have also added a <a href="https://github.com/krjordan/random-quote-generator">Github repo</a> for those who would rather download the source code to play around with. The final code up to this point is below.</p>
+
+<pre><code class="language-html">&lt;body&gt;
+  &lt;div class=&quot;container&quot;&gt;
+    &lt;h2&gt;Random Quote Generator&lt;/h2&gt;
+    &lt;a href=&quot;#&quot; id=&quot;btn-quote&quot;&gt;Generate New Quote&lt;/a&gt;
+    &lt;blockquote&gt;
+      &lt;p id=&quot;quoteText&quot;&gt;Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eius harum, aspernatur quas earum aut tempora necessitatibus voluptatibus nam veritatis odit neque ut animi! Veniam nam pariatur unde dicta consectetur a quos, quae corporis dolorem, ratione ex aliquam, ipsa facilis nostrum.&lt;/p&gt;
+      &lt;cite&gt;&amp;mdash; &lt;span id=&quot;quoteAuthor&quot;&gt;Lorem impsum.&lt;/span&gt;
+        &lt;span id=&quot;btn-tweet&quot;&gt;
+          &lt;i class=&quot;fa fa-twitter&quot;&gt;&lt;/i&gt;
+        &lt;/span&gt;
+      &lt;/cite&gt;
+    &lt;/blockquote&gt;
+    &lt;div class=&quot;load&quot;&gt;&lt;i class=&quot;fa fa-spinner fa-spin&quot;&gt;&lt;/i&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;footer&gt;Powered by&amp;nbsp;&lt;a href=&quot;http://forismatic.com/en/&quot;&gt;Forismatic&lt;/a&gt;&lt;/footer&gt;
+&lt;/body&gt;
+</code></pre>
+
+<pre><code class="language-css">body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  font-family: 'Open Sans', sans-serif;
+}
+.container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  flex: 1;
+}
+h2 {
+  padding: 3.125em 0;
+  font-weight: 700;
+  font-style: italic;
+}
+p {
+  max-width: 43.750em;
+}
+#btn-quote {
+  padding: 0.625em;
+  margin: 3.125em 0;
+  background-color: #337ab7;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+}
+#btn-quote:hover {
+  background-color: #2e6da4;
+}
+blockquote {
+  background-color: #f9f9f9;
+  border-left: 10px solid #ccc;
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
+  quotes: '\201C''\201D''\2018''\2019';
+}
+blockquote:before {
+  color: #ccc;
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em
+}
+blockquote p,
+blockquote span {
+  padding: 0.938em 0;
+}
+#btn-tweet {
+  padding-left: 1.563em;
+  cursor: pointer;
+  color: #4099ff;
+}
+#btn-tweet:hover {
+  color: #0065d9;
+}
+.load {
+  padding: 6.250em 0;
+}
+footer {
+  padding: 0.938em;
+}
+footer a {
+  text-decoration: none;
+  color: #337ab7;
+}
+footer a:hover {
+  color: #0065d9;
+}
+</code></pre>
+
+<pre><code class="language-javascript">$(document).ready(function (){
+  // Hide the loading icon
+  $('.load').hide();
+});
+</code></pre>
+	
+			
+
+			
+
+			
+				<div class="paging">
+					<span class="paging-label">More Reading</span>
+					
+					<div class="paging-newer">
+						<span class="dark-red">Newer</span><span class="decorative-marker">//</span>
+						<a class="paging-link" href="/post/random-quote-part-II/">Random Quote Part II</a>
+		            </div>
+		            
+
+					
+					<div class="paging-older">
+						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
+			            <a class="paging-link" href="/post/navigation-header-with-flexbox/">Navigation Header with Flexbox</a>
+		            </div>
+		            
+	            </div>
+            
+          </section>
+          
+          	<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ryanscodingblog';
+    var disqus_identifier = '\/post\/random-quote-part-I\/';
+    var disqus_title = 'Random Quote Part I';
+    var disqus_url = '\/post\/random-quote-part-I\/';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+          
+        
+      <div class="footer">
+	<hr class="thin" />
+	<div class="pure-menu pure-menu-horizontal pure-menu-open">
+		<ul class="footer-menu">
+		
+		</ul>
+	</div>
+
+	<p>&copy; 2017. All rights reserved.</p>
+</div>
+    </div>
+  </div>
+	
+
+	
+
+  
+</body>
+</html>
