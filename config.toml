@@ -1,6 +1,6 @@
 languageCode = "en-us"
 title = "My Coding Blog"
-baseurl = "http://www.mycodingblog.com"
+baseurl = ""
 disqusShortname = "ryanscodingblog"
 canonifyURLs = true
 theme = "my-hugo-redlounge"
