@@ -1,13 +1,13 @@
 +++
-draft = true
+draft = false
 date = "2017-03-08T15:07:37-06:00"
-title = "Angular Brewski Catalogue Part I"
-tags = ["angular", "material"]
+title = "Building an App With the Angular CLI and Material Part I"
+tags = ["angular", "material", "angular-cli"]
 author = "Ryan Jordan"
 
 +++
 
-I'm definitely not an expert in regards to [Angular](https://angular.io/), but I thought it would be fun to write an app that uses the [Punk API](https://punkapi.com/) with the [Angular CLI](https://cli.angular.io) and [Angular Material](https://material.angular.io/). I will build this app over the span of a few blog posts. Part I will focus on the set up of Angular, Angular Material. At the end of this tutorial, we will have an app that displays a list of beers that we can page through. Or if you want to just view the finished product, you can view the [repo](https://github.com/krjordan/brewski-catalogue) or the [live]() demo.
+I thought it would be fun to write an app that uses the [Punk API](https://punkapi.com/) with the [Angular CLI](https://cli.angular.io) and [Angular Material](https://material.angular.io/). My plan is to build this app over the span of a few blog posts. Part I will focus on the set up of Angular, Angular Material. At the end of this tutorial, we will have an app that displays a list of beers that we can page through. Or if you want to just view the finished product, you can view the [repo](https://github.com/krjordan/brewski-catalogue) or the [live]() demo.
 
 <!--more-->
 
@@ -23,7 +23,7 @@ npm install -g @angular/cli yarn
 * Yarn: `^0.21.3`
 * Angular: `^2.4.0`
 * Angular-CLI: `1.0.0-rc.2`
-* Angular Material: `^2.0.0-beta.1`
+* Angular Material: `^2.0.0-beta.2`
 
 ## Getting Started
 
@@ -34,11 +34,11 @@ ng set --global packageManager=yarn
 ng new brewski-catalogue --style scss
 ```
 
-This creates a new Angular project called <code class="language-none">brewski-catalogue</code> and then installs our dependencies. Once complete, we can type <code class="language-none">ng serve</code> or <code class="language-none">yarn start</code> and point our browser to <code class="language-none">localhost:4200</code>. You should see "**app works!**" displayed on the page.
+This creates a new Angular project called <code class="language-none">brewski-catalogue</code> and then installs our dependencies using Yarn. Once complete, we can type <code class="language-none">ng serve</code> or <code class="language-none">yarn start</code> and point our browser to <code class="language-none">localhost:4200</code>. You should see "**app works!**" displayed on the page.
 
 ## Suds Service
 
-We will need a service to make an http request and retrieve the list of beers to use in our app. Let's do that now by making a new directory called <code class="language-none">services</code> at <code class="language-none">src/app/services</code> and then use the Angular-CLI to generate our service.
+We will need a service to make an http request and retrieve the list of beers to use in our app. Let's do that now by making a new directory called <code class="language-none">services</code> at <code class="language-none">src/app/services</code> and then use the Angular CLI to generate our service.
 
 ```language-none
 mkdir src/app/services
@@ -162,7 +162,7 @@ export class AppModule{ }
 
 Don't forget to add a comma to the import before our <code class="language-none">MaterialModule</code>. Then you will need to add <code class="language-typescript">@import '~@angular/material/core/theming/prebuilt/indigo-pink.css';</code> to the <code class="language-none">src/styles.scss</code> file. Once that's complete, we can start building our beer-list component.
 
-Lets remove the <code class="language-markup">{{ beers | json }}</code> from our <code class="language-none">beer-list.component.html</code> and replace it with the following:
+Lets remove the <code class="language-markup">{{ beers | json }}</code> from our <code class="language-none">beer-list.component.html</code> and replace it with a material card layout:
 
 ```html
 <md-card *ngFor="let beer of beers">
@@ -317,7 +317,7 @@ export class BeerListControlsComponent implements OnInit {
 }
 ```
 
-Now when our previous or next buttons are clicked, our component methods will be called to decrement/increment our property and then emit an event to out <code class="language-typescript">BeerListComponent</code>. Now lets add our <code class="language-javascript">updatePage()</code> method to the <code class="language-typescript">BeerListComponent</code>.
+Now when our previous or next buttons are clicked, our component methods will be called to decrement/increment our property and then emit an event to our <code class="language-typescript">BeerListComponent</code>. Now lets add our <code class="language-javascript">updatePage()</code> method to the <code class="language-typescript">BeerListComponent</code>.
 
 ```typescript
 // Change our OnInit method to call updatePage
@@ -331,13 +331,13 @@ updatePage(page?: number) {
 }
 ```
 
-Notice, I refactored our code so that the <code class="language-typescript">ngOnInit()</code> method calls the <code class="language-typescript">updatePage()</code> method. I have also added an optional parameter (note the <code class="language-none">?</code>). Now lets edit our template to finish hooking up our event emitter.
+Notice, I refactored our code so that the <code class="language-typescript">ngOnInit()</code> method calls the <code class="language-typescript">updatePage()</code> method. I have also added an optional parameter (note the <code class="language-none">?</code>). Now lets edit our template to finish wiring up our event emitter.
 
 ```markup
 <app-beer-list-controls (updatePage)="updatePage($event)"></app-beer-list-controls>
 ```
 
-The last thing we need to do is fix our service to use a default parameter. In the <code class="language-none">src/app/services/suds.service.ts</code>, set up the <code class="language-typescript">getSuds()</code> method:
+The last thing we need to do is fix our service to use a default parameter. In the <code class="language-none">src/app/services/suds.service.ts</code>, edit the <code class="language-typescript">getSuds()</code> method to take a parameter with a default value of 1 and add the parameter to our url:
 
 ```typescript
 getSuds(page: number = 1) {
@@ -348,4 +348,4 @@ getSuds(page: number = 1) {
 
 And there we have it, we should now be able to change the page of beers.
 
-Part II will focus on building a beer detail view and getting our routes set up. You can view the [code](https://github.com/krjordan/brewski-catalogue) on GitHub or the [live]() demo of the completed tutorial (currently only part I).
+Part II will focus on fixing/adding our tests. You can view the [code](https://github.com/krjordan/brewski-catalogue) on GitHub or the [live]() demo of the completed tutorial (currently only up to part I).
