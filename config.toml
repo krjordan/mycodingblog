@@ -6,7 +6,7 @@ canonifyURLs = true
 theme = "my-hugo-redlounge"
 
 [params]
-  sidebarTitle = "My Coding Blog"
+  sidebartitle = "My Coding Blog"
   sidebartagline = "This is where I post about what I've learned in my career as a web developer. I also post tutorials and other random, but hopefully useful things, which can benefit beginners and experts alike."
   gaid = "UA-67235996-1"
 
