@@ -1,13 +1,13 @@
 +++
 draft = false
 date = "2017-03-08T15:07:37-06:00"
-title = "Building an App With the Angular CLI and Material Part I"
+title = "Building an Angular & Material App Part I"
 tags = ["angular", "material", "angular-cli"]
 author = "Ryan Jordan"
 
 +++
 
-I thought it would be fun to write an app that uses the [Punk API](https://punkapi.com/) with the [Angular CLI](https://cli.angular.io) and [Angular Material](https://material.angular.io/). My plan is to build this app over the span of a few blog posts. Part I will focus on the set up of Angular, Angular Material. At the end of this tutorial, we will have an app that displays a list of beers that we can page through. Or if you want to just view the finished product, you can view the [repo](https://github.com/krjordan/brewski-catalogue) or the [live]() demo.
+I thought it would be fun to write an app that uses the [Punk API](https://punkapi.com/) with the [Angular CLI](https://cli.angular.io) and [Angular Material](https://material.angular.io/). My plan is to build this app over the span of a few blog posts. Part I will focus on the set up of Angular, Angular Material. At the end of this tutorial, we will have an app that displays a list of beers that we can page through. Or if you want to just view the finished product, you can view the [repo](https://github.com/krjordan/brewski-catalogue) or the [live](https://krjordan.github.io/brewski-catalogue/) demo.
 
 <!--more-->
 
@@ -348,4 +348,4 @@ getSuds(page: number = 1) {
 
 And there we have it, we should now be able to change the page of beers.
 
-Part II will focus on fixing/adding our tests. You can view the [code](https://github.com/krjordan/brewski-catalogue) on GitHub or the [live]() demo of the completed tutorial (currently only up to part I).
+Part II will focus on fixing/adding our tests. You can view the [code](https://github.com/krjordan/brewski-catalogue) on GitHub or the [live](https://krjordan.github.io/brewski-catalogue/) demo of the completed tutorial (currently only up to part I).
