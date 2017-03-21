@@ -349,3 +349,5 @@ getSuds(page: number = 1) {
 And there we have it, we should now be able to change the page of beers.
 
 Part II will focus on fixing/adding our tests. You can view the [code](https://github.com/krjordan/brewski-catalogue) on GitHub or the [live](https://krjordan.github.io/brewski-catalogue/) demo of the completed tutorial (currently only up to part I).
+
+I hope this tutorial has been helpful. If you spot errors or would like to suggest an edit, please feel free to [open an issue or submit a pull request to this article on GitHub](https://github.com/krjordan/mycodingblog/blob/master/content/post/building-an-angular-and-material-app-part-1.md).
