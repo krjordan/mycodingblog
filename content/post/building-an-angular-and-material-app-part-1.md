@@ -20,10 +20,10 @@ npm install -g @angular/cli yarn
 ```
 
 ### Versions
-* Yarn: `^0.21.3`
-* Angular: `^2.4.0`
-* Angular-CLI: `1.0.0-rc.2`
-* Angular Material: `^2.0.0-beta.2`
+* Yarn: `^0.27.5`
+* Angular: `^4.0.0`
+* Angular-CLI: `1.2.0`
+* Angular Material: `2.0.0-beta.7`
 
 ## Getting Started
 
@@ -160,7 +160,7 @@ import { MaterialModule } from '@angular/material';
 export class AppModule{ }
 ```
 
-Don't forget to add a comma to the import before our <code class="language-none">MaterialModule</code>. Then you will need to add <code class="language-typescript">@import '~@angular/material/core/theming/prebuilt/indigo-pink.css';</code> to the <code class="language-none">src/styles.scss</code> file. Once that's complete, we can start building our beer-list component.
+Don't forget to add a comma to the import before our <code class="language-none">MaterialModule</code>. Then you will need to add <code class="language-typescript">@import "~@angular/material/prebuilt-themes/indigo-pink.css";</code> to the <code class="language-none">src/styles.scss</code> file. Once that's complete, we can start building our beer-list component.
 
 Lets remove the <code class="language-markup">{{ beers | json }}</code> from our <code class="language-none">beer-list.component.html</code> and replace it with a material card layout:
 
