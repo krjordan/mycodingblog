@@ -12,7 +12,7 @@ theme = "my-hugo-redlounge"
 
 [[menu.main]]
   name = "Portfolio"
-  url = "http://krjordan.co"
+  url = "https://www.ryanjordan.me"
 
 [[menu.main]]
   name = "About Me"
@@ -25,7 +25,7 @@ theme = "my-hugo-redlounge"
 
 [[menu.social]]
   pre = "<i class='fa fa-twitter fa-2x'></i>"
-  url = "https://twitter.com/RyanJ1500"
+  url = "https://twitter.com/ryanjordandev"
   identifier = "Twitter"
 
 [[menu.social]]
