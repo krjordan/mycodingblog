@@ -9,7 +9,7 @@ author = "Ryan Jordan"
 
 I was recently tasked with building out an email newsletter. Honestly, I was dreading the task. Luckily, I did a bit of research before I started out on this adventure and found [Foundation for Emails](http://foundation.zurb.com/emails.html). It's well documented and even has a [CLI](http://foundation.zurb.com/emails/docs/sass-guide.html).
 
-Getting started is as simple as <code class="language-none">npm install -g foundation cli</code> and then <code class="language-none">foundation new \-\-framework emails</code>. Once complete, you are ready to start coding an email using Inky, Foundation's email templating language. Inky allows you to write `<column>` and `<row>` instead of writing out your emails in a table.
+Getting started is as simple as <code class="language-none">npm install -g foundation-cli</code> and then <code class="language-none">foundation new \-\-framework emails</code>. Once complete, you are ready to start coding an email using Inky, Foundation's email templating language. Inky allows you to write `<column>` and `<row>` instead of writing out your emails in a table.
 
 <!--more-->
 
